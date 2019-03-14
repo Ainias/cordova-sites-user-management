@@ -1,0 +1,22 @@
+{
+  "name": "cordova-sites-user-management",
+  "displayName": "Easy Sync",
+  "version": "0.1.0",
+  "description": "Ein Usermanagement für Cordova-Sites",
+  "scripts": {
+    "build": "node bin/build.js"
+  },
+  "author": "Silas Günther",
+  "dependencies": {
+    "cordova-sites": "file:../cordova-sites",
+    "cordova-sites-easy-sync": "file:../cordova-sites-easy-sync",
+    "cordova-sites-database": "file:../cordova-sites-database"
+  },
+  "devDependencies": {
+    "rollup": "^1.6.0",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-html-import-file-path": "git+https://github.com/Ainias/rollup-plugin-html-import-file-path.git",
+    "rollup-plugin-import-file-path": "git+https://github.com/Ainias/rollup-plugin-import-file-path.git",
+    "rollup-plugin-json": "^3.1.0"
+  }
+}
