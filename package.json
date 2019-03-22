@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "description": "Ein Usermanagement für Cordova-Sites",
   "scripts": {
-    "build": "node bin/build.js"
+    "build": "node bin/build.js",
+    "update packages": "node bin/updateCopies.js"
   },
   "author": "Silas Günther",
   "peerDependencies": {

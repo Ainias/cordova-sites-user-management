@@ -34,7 +34,7 @@ export class User extends EasySyncBaseModel{
             joinTable: {
                 name: "userRole"
             },
-            cascade: true
+            cascade: false
         };
         return relations;
     }

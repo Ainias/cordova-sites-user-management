@@ -1,6 +1,24 @@
 import { EasySyncBaseModel } from 'cordova-sites-easy-sync/model';
 import { BaseDatabase } from 'cordova-sites-database';
 
+// import {Role} from "./Role";
+
+class Access extends EasySyncBaseModel{
+    constructor() {
+        super();
+        this.name = null;
+        this.description = null;
+    }
+
+    static getColumnDefinitions(){
+        let columns = super.getColumnDefinitions();
+        columns["name"] = {type: BaseDatabase.TYPES.STRING, unique: true};
+        columns["description"] = {type: BaseDatabase.TYPES.STRING};
+        return columns;
+    }
+}
+BaseDatabase.addModel(Access);
+
 class Role extends EasySyncBaseModel{
     constructor() {
         super();
@@ -26,7 +44,7 @@ class Role extends EasySyncBaseModel{
             joinTable: {
                 name: "roleAccess"
             },
-            cascade: true
+            cascade: false
         };
         relations["parents"] = {
             target: Role.getSchemaName(),
@@ -42,7 +60,7 @@ class Role extends EasySyncBaseModel{
                     referencedColumnName: "id"
                 }
             },
-            cascade: true
+            cascade: false
         };
         relations["children"] = {
             target: Role.getSchemaName(),
@@ -58,28 +76,12 @@ class Role extends EasySyncBaseModel{
                     referencedColumnName: "id"
                 }
             },
-            cascade: true
+            cascade: false
         };
         return relations;
     }
 }
 BaseDatabase.addModel(Role);
-
-class Access extends EasySyncBaseModel{
-    constructor() {
-        super();
-        this.name = null;
-        this.description = null;
-    }
-
-    static getColumnDefinitions(){
-        let columns = super.getColumnDefinitions();
-        columns["name"] = {type: BaseDatabase.TYPES.STRING, unique: true};
-        columns["description"] = {type: BaseDatabase.TYPES.STRING};
-        return columns;
-    }
-}
-BaseDatabase.addModel(Access);
 
 class User extends EasySyncBaseModel{
     constructor() {
@@ -113,7 +115,7 @@ class User extends EasySyncBaseModel{
             joinTable: {
                 name: "userRole"
             },
-            cascade: true
+            cascade: false
         };
         return relations;
     }

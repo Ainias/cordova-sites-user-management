@@ -27,7 +27,7 @@ export class Role extends EasySyncBaseModel{
             joinTable: {
                 name: "roleAccess"
             },
-            cascade: true
+            cascade: false
         };
         relations["parents"] = {
             target: Role.getSchemaName(),
@@ -43,7 +43,7 @@ export class Role extends EasySyncBaseModel{
                     referencedColumnName: "id"
                 }
             },
-            cascade: true
+            cascade: false
         };
         relations["children"] = {
             target: Role.getSchemaName(),
@@ -59,7 +59,7 @@ export class Role extends EasySyncBaseModel{
                     referencedColumnName: "id"
                 }
             },
-            cascade: true
+            cascade: false
         };
         return relations;
     }
