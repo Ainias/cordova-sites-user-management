@@ -56,24 +56,33 @@ class UserSite extends DelegateSite {
         this._access = access;
     }
 
-    // async onConstruct(constructParameters) {
-    //     if (UserManager.getInstance().hasAccess(this._access)) {
-    //         await super.onConstruct(constructParameters);
-    //     } else {
-    //         await new Toast("wrong rights").show();
-    //         await this.finish();
-    //     }
-    // }
-
-
-    async onViewLoaded() {
+    async onConstruct(constructParameters) {
         if (UserManager.getInstance().hasAccess(this._access)) {
-            await super.onViewLoaded();
+            await super.onConstruct(constructParameters);
         } else {
             await new Toast("wrong rights").show();
-            this.finish();
+            await this.finish();
         }
     }
+
+
+    // async onViewLoaded(...args) {
+    //     if (UserManager.getInstance().hasAccess(this._access)) {
+    //         await super.onViewLoaded(...args);
+    //     } else {
+    //         await new Toast("wrong rights").show();
+    //         this.finish();
+    //     }
+    // }
+    //
+    // async onStart(...args) {
+    //     if (UserManager.getInstance().hasAccess(this._access)) {
+    //         await super.onStart(...args);
+    //     } else {
+    //         await new Toast("wrong rights").show();
+    //         this.finish();
+    //     }
+    // }
 }
 
 class OfflineUserManager extends UserManager {
@@ -95,10 +104,13 @@ class OfflineUserManager extends UserManager {
     }
 
     async login(email, password) {
+
         let user = await OfflineUserManager._userModel.findOne({
             "email": email,
             "password": this._hashPassword(password)
         }, undefined, undefined, OfflineUserManager._userModel.getRelations());
+
+        console.log(user);
 
         if (user && user.roles.length > 0) {
             let accesses = [];
@@ -125,7 +137,7 @@ class OfflineUserManager extends UserManager {
                 online: true,
                 username: user.username,
                 email: user.email,
-                accesses: accesses,
+                accesses: accessNames,
             };
             return true;
         }
@@ -165,6 +177,7 @@ class OfflineUserManager extends UserManager {
         return pw;
     }
 }
+
 OfflineUserManager._userModel = null;
 OfflineUserManager.LOGGED_OUT_ACCESSES = UserManager.OFFLINE_ACCESSES;
 

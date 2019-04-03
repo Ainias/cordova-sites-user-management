@@ -21,10 +21,13 @@ export class OfflineUserManager extends UserManager {
     }
 
     async login(email, password) {
+
         let user = await OfflineUserManager._userModel.findOne({
             "email": email,
             "password": this._hashPassword(password)
         }, undefined, undefined, OfflineUserManager._userModel.getRelations());
+
+        console.log(user);
 
         if (user && user.roles.length > 0) {
             let accesses = [];
@@ -51,7 +54,7 @@ export class OfflineUserManager extends UserManager {
                 online: true,
                 username: user.username,
                 email: user.email,
-                accesses: accesses,
+                accesses: accessNames,
             };
             return true;
         }
@@ -91,5 +94,6 @@ export class OfflineUserManager extends UserManager {
         return pw;
     }
 }
+
 OfflineUserManager._userModel = null;
 OfflineUserManager.LOGGED_OUT_ACCESSES = UserManager.OFFLINE_ACCESSES;
