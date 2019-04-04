@@ -6,7 +6,9 @@ const packageName = require("../package.json").name;
 
 let pathsToProjects = [
     // "/home/silas/Projekte/Web/project-echo",
-    "/home/silas/Projekte/i9/mbb"
+    // "/home/silas/Projekte/i9/mbb"
+
+    "/var/www/i9/mbb"
 ];
 
 const deleteFolderRecursive = function(path) {
@@ -43,7 +45,7 @@ execPromise("npm pack").then(async (std) => {
     let name = std[0].trim();
     let pathToTar = path.resolve(thisPath, name);
 
-    if (!fs.statSync("tmp").isDirectory()) {
+    if (!fs.existsSync("tmp")) {
         fs.mkdirSync("tmp");
     }
     process.chdir("tmp");

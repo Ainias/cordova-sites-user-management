@@ -117,10 +117,20 @@ async function build() {
     });
 }
 
-build();
+// build();
 buildEntryPoints({
     input: [
         path.resolve(process.cwd(), "src/server/"),
         // path.resolve(process.cwd(), "src/shared/"),
     ],
 }, "./server.mjs");
+buildEntryPoints({
+    input: [
+        path.resolve(process.cwd(), "src/client/js/"),
+    ],
+}, "./client.mjs");
+buildEntryPoints({
+    input: [
+        path.resolve(process.cwd(), "src/shared/"),
+    ],
+}, "./models.mjs");

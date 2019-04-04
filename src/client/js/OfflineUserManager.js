@@ -1,6 +1,7 @@
 import {EasySyncClientDb} from "cordova-sites-easy-sync/client";
 import {Helper} from "cordova-sites";
 import {UserManager} from "./UserManager";
+import {User} from "../../../models";
 
 export class OfflineUserManager extends UserManager {
 
@@ -16,18 +17,16 @@ export class OfflineUserManager extends UserManager {
         }
     }
 
-    async getMe() {
+    async _doGetMe() {
         return this._userData;
     }
 
-    async login(email, password) {
+    async _doLogin(email, password) {
 
-        let user = await OfflineUserManager._userModel.findOne({
+        let user = await User.findOne({
             "email": email,
             "password": this._hashPassword(password)
-        }, undefined, undefined, OfflineUserManager._userModel.getRelations());
-
-        console.log(user);
+        }, undefined, undefined, User.getRelations());
 
         if (user && user.roles.length > 0) {
             let accesses = [];
@@ -61,7 +60,7 @@ export class OfflineUserManager extends UserManager {
         return false;
     }
 
-    async logout() {
+    async _doLogout() {
         this._userData = {
             id: null,
             loggedIn: false,
@@ -95,5 +94,4 @@ export class OfflineUserManager extends UserManager {
     }
 }
 
-OfflineUserManager._userModel = null;
 OfflineUserManager.LOGGED_OUT_ACCESSES = UserManager.OFFLINE_ACCESSES;
