@@ -2,5 +2,9 @@
   "login": "Login",
   "logout": "Logout",
   "email": "E-Mail",
-  "password": "Password"
+  "password": "Password",
+
+  "email or password is wrong": "The e-mail or password is incorrect!",
+  "stay logged in": "Stay logged in",
+  "goodbye": "Goodbye"
 }

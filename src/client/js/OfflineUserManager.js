@@ -1,7 +1,7 @@
 import {EasySyncClientDb} from "cordova-sites-easy-sync/client";
-import {Helper} from "cordova-sites";
+import {Helper, NativeStoragePromise} from "cordova-sites";
 import {UserManager} from "./UserManager";
-import {User} from "../../../models";
+import {Role, User} from "../../../models";
 
 export class OfflineUserManager extends UserManager {
 
@@ -18,43 +18,60 @@ export class OfflineUserManager extends UserManager {
     }
 
     async _doGetMe() {
+        let userId = await NativeStoragePromise.getItem("user-manager-user-id");
+        if (Helper.isNotNull(userId)) {
+            let user = await User.findById(userId, User.getRelations());
+
+            if (Helper.isNotNull(user)) {
+                await this._handleLoginFromUser(user);
+            }
+        }
         return this._userData;
     }
 
-    async _doLogin(email, password) {
+    async _handleLoginFromUser(user) {
+        let accesses = [];
+
+        let roles = user.roles;
+        let roleIds = [];
+        roles.forEach(role => {
+            roleIds.push(role.id);
+        });
+
+        roles = await Role.findByIds(roleIds, ["accesses"]);
+
+        await Helper.asyncForEach(roles, async role => {
+            accesses.push(...await this._getAccessesFromRole(role))
+        });
+        let accessNames = [];
+        accesses.forEach(access => {
+            accessNames.push(access.name);
+        });
+
+        this._userData = {
+            id: user.id,
+            loggedIn: true,
+            online: true,
+            username: user.username,
+            email: user.email,
+            accesses: accessNames,
+        };
+    }
+
+    async _doLogin(email, password, saveLogin) {
 
         let user = await User.findOne({
             "email": email,
             "password": this._hashPassword(password)
         }, undefined, undefined, User.getRelations());
 
-        if (user && user.roles.length > 0) {
-            let accesses = [];
+        if (user) {
+            await this._handleLoginFromUser(user);
 
-            let roles = user.roles;
-            let roleIds = [];
-            roles.forEach(role => {
-                roleIds.push(role.id);
-            });
+            if (saveLogin){
+                await NativeStoragePromise.setItem("user-manager-user-id", user.id);
+            }
 
-            roles = await roles[0].constructor.findByIds(roleIds, ["accesses"]);
-
-            await Helper.asyncForEach(roles, async role => {
-                accesses.push(...await this._getAccessesFromRole(role))
-            });
-            let accessNames = [];
-            accesses.forEach(access => {
-                accessNames.push(access.name);
-            });
-
-            this._userData = {
-                id: user.id,
-                loggedIn: true,
-                online: true,
-                username: user.username,
-                email: user.email,
-                accesses: accessNames,
-            };
             return true;
         }
         return false;
@@ -69,16 +86,18 @@ export class OfflineUserManager extends UserManager {
             email: null,
             accesses: OfflineUserManager.LOGGED_OUT_ACCESSES,
         };
+
+        await NativeStoragePromise.remove("user-manager-user-id");
         return false;
     }
 
     async _getAccessesFromRole(role) {
         let accesses = role.accesses;
 
-        let repo = await EasySyncClientDb.getInstance()._getRepository(role.constructor.getSchemaName());
-        let parents = await repo.createQueryBuilder(role.constructor.getSchemaName())
-            .leftJoinAndSelect(role.constructor.getSchemaName() + '.accesses', "access")
-            .leftJoinAndSelect(role.constructor.getSchemaName() + '.children', "child")
+        let repo = await EasySyncClientDb.getInstance()._getRepository(Role.getSchemaName());
+        let parents = await repo.createQueryBuilder(Role.getSchemaName())
+            .leftJoinAndSelect(Role.getSchemaName() + '.accesses', "access")
+            .leftJoinAndSelect(Role.getSchemaName() + '.children', "child")
             .where('child.id = :id', {id: role.id})
             .getMany();
 

@@ -6,7 +6,6 @@ export class UserMenuAction extends MenuAction{
         super(name, action, showFor, order, icon);
         this._access = access;
         this._loginChangedCallbackId = UserManager.getInstance().addLoginChangeCallback(() => {
-            console.log("redraw callback", arguments);
             this.redraw();
         })
     }

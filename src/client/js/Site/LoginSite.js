@@ -1,5 +1,5 @@
 import {UserSite} from "../Context/UserSite";
-import {App, Form, MenuSite, NavbarFragment} from "cordova-sites";
+import {App, Form, Helper, MenuSite, NavbarFragment} from "cordova-sites";
 
 import view from "./../../html/sites/loginSite.html"
 import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";
@@ -16,13 +16,21 @@ export class LoginSite extends MenuSite {
         let res = super.onViewLoaded();
         let form = new Form(this.findBy("#login-form"), async data => {
             // await this.showLoadingSymbol();
-            if (await UserManager.getInstance().login(data["email"], data["password"])){
+            if (await UserManager.getInstance().login(data["email"], data["password"], Helper.isNotNull(data["saveLogin"]))){
                 this.finish();
             }
             else {
+                form.setErrors({
+                    "email":"email or password is wrong"
+                });
             // await this.removeLoadingSymbol();
             }
         });
+
+        let listener = () => form.clearErrors();
+        this.findBy("#login-form [name=email]").addEventListener("keydown", listener);
+        this.findBy("#login-form [name=password]").addEventListener("keydown", listener);
+
         return res;
     }
 }
@@ -31,7 +39,7 @@ LoginSite.LOGOUT_ACCESS = "loggedIn";
 LoginSite.ADD_LOGIN_ACTION = true;
 LoginSite.ADD_LOGOUT_ACTION = true;
 
-App.addInitialization(() => {
+App.addInitialization(app => {
     if (LoginSite.ADD_LOGIN_ACTION){
         NavbarFragment.defaultActions.push(new StartUserSiteMenuAction("login", LoginSite.ACCESS, LoginSite));
     }
@@ -40,4 +48,5 @@ App.addInitialization(() => {
             await UserManager.getInstance().logout();
         }));
     }
+    app.addDeepLink("login", LoginSite);
 });

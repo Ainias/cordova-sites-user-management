@@ -1,4 +1,4 @@
-import {Helper} from "cordova-sites";
+import {Helper, Toast} from "cordova-sites";
 
 export class UserManager {
 
@@ -50,9 +50,9 @@ export class UserManager {
         return res;
     }
 
-    async login(email, password){
+    async login(email, password, saveLogin){
         let before = this._userData;
-        let res = await this._doLogin(email, password);
+        let res = await this._doLogin(email, password, saveLogin);
         await this._checkChangedLogin(before);
         return res;
     }
@@ -61,6 +61,11 @@ export class UserManager {
         let before = this._userData;
         let res = await this._doLogout();
         await this._checkChangedLogin(before);
+
+        if (!this._userData.loggedIn){
+            await new Toast("goodbye").show();
+        }
+
         return res;
     }
 
