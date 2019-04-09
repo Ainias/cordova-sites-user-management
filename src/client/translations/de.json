@@ -6,5 +6,19 @@
 
   "email or password is wrong": "Die E-Mail oder das Passwort stimmt nicht!",
   "stay logged in": "Angemeldet bleiben",
-  "goodbye": "Auf Wiedersehen"
+  "goodbye": "Auf Wiedersehen",
+  "welcome back": "Willkommen zurück",
+  "registration successful": "Registrierung erfolgreich",
+
+  "registration": "Anmelden",
+  "I have read and accepted the terms and conditions.": "Ich habe die AGB gelesen und akzeptiert.",
+  "retype password": "Passwort wiederholen",
+  "the passwords do not match.": "Die Passwörter stimmen nicht überein.",
+  "username": "Username",
+
+  "email is already in use.": "Die E-Mail wird bereits verwendet.",
+  "username is already in use.": "Der Username ist bereits vergeben.",
+
+  "wrong rights": "Keine Berechtigung!"
+
 }

@@ -6,5 +6,18 @@
 
   "email or password is wrong": "The e-mail or password is incorrect!",
   "stay logged in": "Stay logged in",
-  "goodbye": "Goodbye"
+  "goodbye": "Goodbye",
+  "welcome back": "Welcome back",
+  "registration successful": "Registration successful",
+
+  "registration": "Registration",
+  "I have read and accepted the terms and conditions.": "I have read and accepted the terms and conditions.",
+  "retype password": "Retype Password",
+  "the passwords do not match.": "The passwords do not match.",
+  "username": "Username",
+
+  "email is already in use.": "This e-mail is already in use.",
+  "username is already in use.": "This Username is already taken.",
+
+  "wrong rights": "Wrong Rights!"
 }

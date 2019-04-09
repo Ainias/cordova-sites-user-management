@@ -1,5 +1,5 @@
 import {UserSite} from "../Context/UserSite";
-import {App, Form, Helper, MenuSite, NavbarFragment} from "cordova-sites";
+import {App, Form, Helper, MenuSite, NavbarFragment, Toast} from "cordova-sites";
 
 import view from "./../../html/sites/loginSite.html"
 import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";
@@ -17,7 +17,8 @@ export class LoginSite extends MenuSite {
         let form = new Form(this.findBy("#login-form"), async data => {
             // await this.showLoadingSymbol();
             if (await UserManager.getInstance().login(data["email"], data["password"], Helper.isNotNull(data["saveLogin"]))){
-                this.finish();
+                await new Toast("welcome back").show();
+                await this.finish();
             }
             else {
                 form.setErrors({

@@ -27,12 +27,12 @@ export class UserSite extends DelegateSite {
     //     }
     // }
     //
-    // async onStart(...args) {
-    //     if (UserManager.getInstance().hasAccess(this._access)) {
-    //         await super.onStart(...args);
-    //     } else {
-    //         await new Toast("wrong rights").show();
-    //         this.finish();
-    //     }
-    // }
+    async onStart(...args) {
+        if (UserManager.getInstance().hasAccess(this._access)) {
+            await super.onStart(...args);
+        } else {
+            await new Toast("wrong rights").show();
+            this.finish();
+        }
+    }
 }
