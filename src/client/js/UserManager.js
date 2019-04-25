@@ -1,4 +1,4 @@
-import {Helper, Toast} from "cordova-sites";
+import {DataManager, Helper, Toast} from "cordova-sites";
 
 export class UserManager {
 
@@ -77,11 +77,28 @@ export class UserManager {
     }
 
     async _doGetMe(){
-        throw new Error("not implemented!");
+        let data = await DataManager.load("user");
+        if (Helper.isSet(data, "userData")){
+            this._userData = data.userData;
+        }
     }
 
-    async _doLogin(email, password){
-        throw new Error("not implemented!");
+    async _doLogin(email, password, saveLogin){
+        let data = await DataManager.send("user/login", {
+            "email": email,
+            "password":password
+        });
+
+        if (data.success){
+            DataManager.setHeader("Authorization", "Bearer "+data.token);
+            await this._doGetMe();
+            return true;
+        }
+        else {
+            DataManager.setHeader("Authorization", "");
+            await new Toast(data.message).show();
+            return false;
+        }
     }
 
     async _doLogout(){

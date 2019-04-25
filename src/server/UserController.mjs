@@ -21,11 +21,36 @@ export class UserController {
 
     static async getMe(req, res) {
         let user = req.user;
-        console.log(req.user);
         if (user) {
-            res.json(user);
+            let accesses = await UserManager.loadCachedAccessesForUser(user);
+            let accessNames = [];
+            accesses.forEach(access => accessNames.push(access.name));
+
+            res.json({
+                "userData":{
+                    "id":user.id,
+                    "loggedIn":true,
+                    "online":true,
+                    "username":user.username,
+                    "email":user.email,
+                    "accesses":accessNames
+                }
+            });
         } else {
-            res.json({});
+            res.json({
+                "userData":{
+                    "id":null,
+                    "loggedIn":false,
+                    "online":true,
+                    "username":null,
+                    "email":null,
+                    "accesses":[
+                        "loggedOut",
+                        "online",
+                        "default"
+                    ]
+                }
+            });
         }
     }
 }
