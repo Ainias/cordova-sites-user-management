@@ -1,4 +1,4 @@
-import {UserManager} from "./UserManager";
+import {UserManager} from "../UserManager";
 
 export class UserController {
     static async login(req, res) {

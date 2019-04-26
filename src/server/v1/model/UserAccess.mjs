@@ -1,7 +1,7 @@
 import {BaseModel} from "cordova-sites-database";
 import {BaseDatabase} from "cordova-sites-database";
-import {Access} from "../../shared/model/Access";
-import {User} from "../../shared/model/User";
+import {Access} from "../../../shared/model/Access";
+import {User} from "../../../shared/model/User";
 // import {Role} from "./Role";
 
 export class UserAccess extends BaseModel{

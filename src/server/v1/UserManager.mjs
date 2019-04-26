@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
-import {User} from "./../shared/model/User";
-import {Role} from "../shared/model/Role";
+import {User} from "../../shared/model/User";
+import {Role} from "../../shared/model/Role";
 import {EasySyncServerDb} from "cordova-sites-easy-sync/src/server/EasySyncServerDb";
 import {ServerHelper} from "./ServerHelper";
 import {UserAccess} from "./model/UserAccess";
-import {Access} from "../shared/model/Access";
+import {Access} from "../../shared/model/Access";
 
 export class UserManager {
 
