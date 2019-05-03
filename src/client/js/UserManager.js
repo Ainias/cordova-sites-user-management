@@ -1,8 +1,8 @@
-import {DataManager, Helper, Toast} from "cordova-sites";
+import {DataManager, Helper, NativeStoragePromise, Toast} from "cordova-sites";
 
 export class UserManager {
 
-    constructor(){
+    constructor() {
         this._userData = {
             id: null,
             loggedIn: false,
@@ -16,109 +16,128 @@ export class UserManager {
         this._loginChangeCallbacks = {};
     }
 
-    addLoginChangeCallback(callback, callImmediately){
+    addLoginChangeCallback(callback, callImmediately) {
         this._lastLoginChangeCallbackId++;
         this._loginChangeCallbacks[this._lastLoginChangeCallbackId] = callback;
 
-        if (Helper.nonNull(callImmediately, false)){
+        if (Helper.nonNull(callImmediately, false)) {
             callback(this._userData.loggedIn, this);
         }
 
         return this._lastLoginChangeCallbackId;
     }
 
-    hasAccess(access){
+    hasAccess(access) {
         return (this._userData.accesses.indexOf(access) !== -1);
     }
 
-    async _checkChangedLogin(before){
-        if (this._userData.loggedIn !== before.loggedIn || (this._userData.loggedIn === true && this._userData.id !== before.id )){
+    async _checkChangedLogin(before) {
+        if (this._userData.loggedIn !== before.loggedIn || (this._userData.loggedIn === true && this._userData.id !== before.id)) {
             await this._callLoginChangeCallbacks();
         }
     }
 
-    async _callLoginChangeCallbacks(){
+    async _callLoginChangeCallbacks() {
         await Helper.asyncForEach(Object.keys(this._loginChangeCallbacks), callbackId => {
             this._loginChangeCallbacks[callbackId](this._userData.loggedIn, this);
         }, true);
     }
 
-    async getMe(){
+    async getMe() {
         let before = this._userData;
         let res = this._doGetMe();
         await this._checkChangedLogin(before);
         return res;
     }
 
-    async login(email, password, saveLogin){
+    async login(email, password, saveLogin) {
         let before = this._userData;
         let res = await this._doLogin(email, password, saveLogin);
         await this._checkChangedLogin(before);
         return res;
     }
 
-    async logout(){
+    async logout() {
         let before = this._userData;
         let res = await this._doLogout();
         await this._checkChangedLogin(before);
 
-        if (!this._userData.loggedIn){
+        if (!this._userData.loggedIn) {
             await new Toast("goodbye").show();
         }
 
         return res;
     }
 
-    async register(email, username, password){
+    async register(email, username, password) {
         let before = this._userData;
         let res = await this._doRegister(email, username, password);
         await this._checkChangedLogin(before);
         return res;
     }
 
-    async _doGetMe(){
+    async _doGetMe() {
+        await UserManager.updateHeaders();
         let data = await DataManager.load("user");
-        if (Helper.isSet(data, "userData")){
+        if (Helper.isSet(data, "userData")) {
             this._userData = data.userData;
         }
     }
 
-    async _doLogin(email, password, saveLogin){
+    async _doLogin(email, password, saveLogin) {
         let data = await DataManager.send("user/login", {
             "email": email,
-            "password":password
+            "password": password
         });
 
-        if (data.success){
-            DataManager.setHeader("Authorization", "Bearer "+data.token);
+        if (data.success) {
+            DataManager.setHeader("Authorization", "Bearer " + data.token);
             await this._doGetMe();
+            sessionStorage.setItem("auth-token", data.token);
+            if (saveLogin){
+                await NativeStoragePromise.setItem("auth-token", data.token);
+            }
             return true;
-        }
-        else {
+        } else {
             DataManager.setHeader("Authorization", "");
+            sessionStorage.setItem("auth-token", "");
+            await NativeStoragePromise.setItem("auth-token", "");
             await new Toast(data.message).show();
             return false;
         }
     }
 
-    async _doLogout(){
-        throw new Error("not implemented!");
+    async _doLogout() {
+        DataManager.setHeader("Authorization", "");
+        sessionStorage.setItem("auth-token", "");
+        await NativeStoragePromise.setItem("auth-token", "");
+
+        await this._doGetMe();
+        return true;
     }
 
-    async _doRegister(email, username, password){
+    async _doRegister(email, username, password) {
         throw new Error("not implemented!");
     }
 
     /**
      * @returns {UserManager}
      */
-    static getInstance(){
-        if (!UserManager._instance){
+    static getInstance() {
+        if (!UserManager._instance) {
             UserManager._instance = new UserManager();
         }
         return UserManager._instance;
     }
+
+    static async updateHeaders() {
+        let token = Helper.nonNull(sessionStorage.getItem("auth-token"), await NativeStoragePromise.getItem("auth-token"));
+        if (token) {
+            DataManager.setHeader("Authorization", "Bearer " + token);
+        }
+    }
 }
+
 UserManager._instance = null;
 UserManager.OFFLINE_ACCESSES = [
     "offline"

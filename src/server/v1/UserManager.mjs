@@ -4,7 +4,6 @@ import {Role} from "../../shared/model/Role";
 import {EasySyncServerDb} from "cordova-sites-easy-sync/src/server/EasySyncServerDb";
 import {ServerHelper} from "./ServerHelper";
 import {UserAccess} from "./model/UserAccess";
-import {Access} from "../../shared/model/Access";
 
 export class UserManager {
 
@@ -84,7 +83,6 @@ export class UserManager {
         await ServerHelper.asyncForEach(roles, async role => {
             accesses.push(...await this.findAccessesForRole(role))
         });
-
 
       return accesses;
     }
