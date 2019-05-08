@@ -11,6 +11,7 @@ export class User extends EasySyncBaseModel{
         this.roles = null;
         this.activated = false;
         this.blocked = false;
+        this.salt = null;
     }
 
     toJSON(){
@@ -27,6 +28,7 @@ export class User extends EasySyncBaseModel{
         columns["password"] = {type: BaseDatabase.TYPES.STRING};
         columns["activated"] = BaseDatabase.TYPES.BOOLEAN;
         columns["blocked"] = BaseDatabase.TYPES.BOOLEAN;
+        columns["salt"] = {type: BaseDatabase.TYPES.STRING};
         return columns;
     }
 

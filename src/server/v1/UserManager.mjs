@@ -4,6 +4,7 @@ import {Role} from "../../shared/model/Role";
 import {EasySyncServerDb} from "cordova-sites-easy-sync/src/server/EasySyncServerDb";
 import {ServerHelper} from "./ServerHelper";
 import {UserAccess} from "./model/UserAccess";
+import crypto from "crypto";
 
 export class UserManager {
 
@@ -45,7 +46,13 @@ export class UserManager {
     }
 
     static _hashPassword(user, password) {
-        return password;
+        if (!user.salt)
+        {
+            user.salt = UserManager._generateSalt();
+        }
+        let hash = crypto.createHmac("sha512", user.salt+UserManager.PEPPER);
+        hash.update(password);
+        return hash.digest("hex");
     }
 
     static async login(email, password) {
@@ -127,6 +134,12 @@ export class UserManager {
         return accesses;
     }
 
+    static _generateSalt() {
+        let length = UserManager.SALT_LENGTH;
+        return crypto.randomBytes(Math.ceil(length/2)).toString("hex").slice(0,length);
+    }
 }
 
+UserManager.SALT_LENGTH = 12;
 UserManager.EXPIRES_IN = "7d";
+UserManager.PEPPER="";
