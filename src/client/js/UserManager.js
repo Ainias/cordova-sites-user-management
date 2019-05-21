@@ -82,6 +82,13 @@ export class UserManager {
         if (Helper.isSet(data, "userData")) {
             this._userData = data.userData;
         }
+        if (Helper.isSet(data, "token")) {
+            DataManager.setHeader("Authorization", "Bearer " + data.token);
+            sessionStorage.setItem("auth-token", data.token);
+            if (Helper.isNotNull(await NativeStoragePromise.getItem("auth-token"))){
+                await NativeStoragePromise.setItem("auth-token", data.token);
+            }
+        }
     }
 
     async _doLogin(email, password, saveLogin) {
@@ -92,8 +99,8 @@ export class UserManager {
 
         if (data.success) {
             DataManager.setHeader("Authorization", "Bearer " + data.token);
-            await this._doGetMe();
             sessionStorage.setItem("auth-token", data.token);
+            await this._doGetMe();
             if (saveLogin){
                 await NativeStoragePromise.setItem("auth-token", data.token);
             }
@@ -117,7 +124,24 @@ export class UserManager {
     }
 
     async _doRegister(email, username, password) {
-        throw new Error("not implemented!");
+        let data = await DataManager.send("user/register", {
+            "email": email,
+            "username":username,
+            "password": password
+        });
+
+        if (data.success) {
+            DataManager.setHeader("Authorization", "Bearer " + data.token);
+            sessionStorage.setItem("auth-token", data.token);
+            await this._doGetMe();
+            return true;
+        } else {
+            DataManager.setHeader("Authorization", "");
+            sessionStorage.setItem("auth-token", "");
+            await NativeStoragePromise.setItem("auth-token", "");
+            await new Toast(data.message).show();
+            return false;
+        }
     }
 
     /**

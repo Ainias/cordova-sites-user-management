@@ -1,5 +1,5 @@
 import {EasySyncController} from "cordova-sites-easy-sync/src/server/EasySyncController";
-import {AccessEasySyncModel} from "../../../shared/model/AccessEasySyncModel";
+import {AccessEasySyncModel} from "../../../shared/v1/model/AccessEasySyncModel";
 import {UserManager} from "../UserManager";
 
 export class SyncController extends EasySyncController{

@@ -14,6 +14,7 @@ const errorHandler = (fn) => {
 };
 
 userRoutes.post("/login", errorHandler(UserController.login));
+userRoutes.post("/register", errorHandler(UserController.register));
 userRoutes.get("", errorHandler(UserManager.setUserFromToken), errorHandler(UserController.getMe));
 
 export {userRoutes};

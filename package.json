@@ -14,7 +14,8 @@
     "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
-    "crypto": "^1.0.1"
+    "crypto": "^1.0.1",
+    "typeorm": "^0.2.17"
   },
   "devDependencies": {
     "crypto": "^1.0.1",

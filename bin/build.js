@@ -117,10 +117,10 @@ async function build() {
     });
 }
 
-// build();
+const versions = ["v1"];
 buildEntryPoints({
     input: [
-        path.resolve(process.cwd(), "src/server/"),
+        path.resolve(process.cwd(), "src/server/"+versions[versions.length-1]),
         // path.resolve(process.cwd(), "src/shared/"),
     ],
 }, "./server.mjs");
@@ -131,6 +131,6 @@ buildEntryPoints({
 }, "./client.mjs");
 buildEntryPoints({
     input: [
-        path.resolve(process.cwd(), "src/shared/"),
+        path.resolve(process.cwd(), "src/shared/"+versions[versions.length-1]),
     ],
 }, "./models.mjs");

@@ -4,7 +4,7 @@ import view from "./../../html/sites/registrationSite.html"
 import {UserSite} from "../Context/UserSite";
 import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";
 import {UserManager} from "../UserManager";
-import {User} from "../../../shared/model/User";
+import {User} from "../../../shared/v1/model/User";
 
 
 export class RegistrationSite extends MenuSite{

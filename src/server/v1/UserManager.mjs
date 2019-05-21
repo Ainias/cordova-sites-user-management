@@ -1,10 +1,17 @@
 import jwt from "jsonwebtoken";
-import {User} from "../../shared/model/User";
-import {Role} from "../../shared/model/Role";
+import {User} from "../../shared/v1/model/User";
+import {Role} from "../../shared/v1/model/Role";
 import {EasySyncServerDb} from "cordova-sites-easy-sync/src/server/EasySyncServerDb";
 import {ServerHelper} from "./ServerHelper";
 import {UserAccess} from "./model/UserAccess";
 import crypto from "crypto";
+import * as _typeorm from "typeorm";
+
+let typeorm = _typeorm;
+if (typeorm.default) {
+    typeorm = typeorm.default;
+}
+
 
 export class UserManager {
 
@@ -18,10 +25,23 @@ export class UserManager {
         if (token) {
             jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
                 if (!err) {
-                    let user = await User.findOne({id: decoded.userId, password: decoded.passwordHash, activated: true, blocked: false});
-                    if (user) {
-                        req.user = user;
+                    let where = {
+                        id: decoded.userId,
+                        password: decoded.passwordHash,
+                        blocked: false,
+                    };
+                    if (UserManager.LOGIN_NEED_TO_BE_ACTIVATED){
+                        where["activated"] = true;
                     }
+
+                    let user = await User.findOne(where);
+                    if (user) {
+                        req.tokenData = decoded;
+                        req.user = user;
+                    } else {
+                        console.log("user with id " + decoded.userId + " for token not found")
+                    }
+
                 } else {
                     console.error(err);
                 }
@@ -46,26 +66,20 @@ export class UserManager {
     }
 
     static _hashPassword(user, password) {
-        if (!user.salt)
-        {
+        if (!user.salt) {
             user.salt = UserManager._generateSalt();
         }
-        let hash = crypto.createHmac("sha512", user.salt+UserManager.PEPPER);
+        let hash = crypto.createHmac("sha512", user.salt + UserManager.PEPPER);
         hash.update(password);
         return hash.digest("hex");
     }
 
     static async login(email, password) {
-        let user = await User.findOne({email: email, activated: true, blocked: false});
+        let user = await User.findOne({email: email.toLowerCase(), activated: true, blocked: false});
 
         if (user) {
             if (this._hashPassword(user, password) === user.password) {
-                let token = jwt.sign({userId: user.id, passwordHash: user.password},
-                    process.env.JWT_SECRET, {
-                        expiresIn: UserManager.EXPIRES_IN
-                    }
-                );
-                // return the JWT token for the future API calls
+                let token = UserManager._generateToken(user);
                 return {user: user, token: token}
             } else {
                 return null;
@@ -75,7 +89,51 @@ export class UserManager {
         }
     }
 
-    static async findAccessesForUser(user){
+    static async register(email, username, password){
+        if (!UserManager.REGISTRATION_CAN_REGISTER){
+            throw new Error("Cannot register new user, since user registration is not activated!")
+        }
+
+        email = email.toLowerCase();
+        if (!UserManager.REGISTRATION_USERNAME_IS_CASE_SENSITIVE){
+            username = username.toLowerCase();
+        }
+        let otherUsers = await Promise.all([
+            User.findOne({email: email}),
+            User.findOne({username: typeorm.Equal(username)}),
+        ]);
+
+        console.log("username", username, otherUsers[1]);
+        if (otherUsers[0]){
+            throw new Error("A user with the email-address exists already!")
+        }
+        if (otherUsers[1]){
+            throw new Error("A user with the username exists already!")
+        }
+
+        let user = new User();
+        user.username = username;
+        user.email = email;
+        user.password = UserManager._hashPassword(user, password);
+        user.activated = UserManager.REGISTRATION_IS_ACTIVATED;
+        user.blocked = false;
+        user.roles = Role.findByIds(UserManager.REGISTRATION_DEFAULT_ROLE_IDS);
+        await user.save();
+
+        //TODO email senden
+
+        return user;
+    }
+
+    static _generateToken(user) {
+        return jwt.sign({userId: user.id, passwordHash: user.password},
+            process.env.JWT_SECRET, {
+                expiresIn: UserManager.EXPIRES_IN
+            }
+        );
+    }
+
+    static async findAccessesForUser(user) {
         let accesses = [];
 
         let roles = user.roles;
@@ -91,10 +149,10 @@ export class UserManager {
             accesses.push(...await this.findAccessesForRole(role))
         });
 
-      return accesses;
+        return accesses;
     }
 
-    static async findAccessesForRole(role){
+    static async findAccessesForRole(role) {
         let accesses = role.accesses;
 
         let repo = await EasySyncServerDb.getInstance()._getRepository(Role.getSchemaName());
@@ -111,7 +169,7 @@ export class UserManager {
         return accesses;
     }
 
-    static async updateCachedAccessesForUser(user){
+    static async updateCachedAccessesForUser(user) {
         let userAccesses = await UserManager.findAccessesForUser(user);
         await ServerHelper.asyncForEach(userAccesses, (async access => {
             let userAccess = new UserAccess();
@@ -121,7 +179,7 @@ export class UserManager {
         }), false);
     }
 
-    static async loadCachedAccessesForUser(user){
+    static async loadCachedAccessesForUser(user) {
         let repo = await EasySyncServerDb.getInstance()._getRepository(UserAccess.getSchemaName());
         let userAccesses = await repo.createQueryBuilder(UserAccess.getSchemaName())
             .leftJoinAndSelect(UserAccess.getSchemaName() + '.user', "user")
@@ -136,10 +194,20 @@ export class UserManager {
 
     static _generateSalt() {
         let length = UserManager.SALT_LENGTH;
-        return crypto.randomBytes(Math.ceil(length/2)).toString("hex").slice(0,length);
+        return crypto.randomBytes(Math.ceil(length / 2)).toString("hex").slice(0, length);
     }
 }
 
 UserManager.SALT_LENGTH = 12;
 UserManager.EXPIRES_IN = "7d";
-UserManager.PEPPER="";
+UserManager.RENEW_AFTER = 60*60*24;
+UserManager.PEPPER = "";
+
+UserManager.LOGIN_NEED_TO_BE_ACTIVATED = true;
+
+//Registration-Settings
+UserManager.REGISTRATION_SEND_EMAIL = true;
+UserManager.REGISTRATION_IS_ACTIVATED = false;
+UserManager.REGISTRATION_DEFAULT_ROLE_IDS = [];
+UserManager.REGISTRATION_USERNAME_IS_CASE_SENSITIVE = true;
+UserManager.REGISTRATION_CAN_REGISTER = true;
