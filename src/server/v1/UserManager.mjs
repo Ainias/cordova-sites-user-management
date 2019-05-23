@@ -103,7 +103,6 @@ export class UserManager {
             User.findOne({username: typeorm.Equal(username)}),
         ]);
 
-        console.log("username", username, otherUsers[1]);
         if (otherUsers[0]){
             throw new Error("A user with the email-address exists already!")
         }
@@ -117,8 +116,10 @@ export class UserManager {
         user.password = UserManager._hashPassword(user, password);
         user.activated = UserManager.REGISTRATION_IS_ACTIVATED;
         user.blocked = false;
-        user.roles = Role.findByIds(UserManager.REGISTRATION_DEFAULT_ROLE_IDS);
+        user.roles = await Role.findByIds(UserManager.REGISTRATION_DEFAULT_ROLE_IDS);
         await user.save();
+
+        await UserManager.updateCachedAccessesForUser(user);
 
         //TODO email senden
 
