@@ -36,8 +36,7 @@ export class UserController {
         }
     }
 
-    static
-    async getMe(req, res) {
+    static async getMe(req, res) {
         let user = req.user;
         if (user) {
             let accesses = await UserManager.loadCachedAccessesForUser(user);

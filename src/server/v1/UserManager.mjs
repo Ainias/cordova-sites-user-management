@@ -35,6 +35,7 @@ export class UserManager {
                     }
 
                     let user = await User.findOne(where);
+
                     if (user) {
                         req.tokenData = decoded;
                         req.user = user;
@@ -180,7 +181,11 @@ export class UserManager {
         }), false);
     }
 
-    static async loadCachedAccessesForUser(user) {
+    static async loadCachedAccessesForUser(user, reload) {
+        if (user._cachedAccesses){
+            return user._cachedAccesses;
+        }
+
         let repo = await EasySyncServerDb.getInstance()._getRepository(UserAccess.getSchemaName());
         let userAccesses = await repo.createQueryBuilder(UserAccess.getSchemaName())
             .leftJoinAndSelect(UserAccess.getSchemaName() + '.user', "user")
@@ -190,7 +195,16 @@ export class UserManager {
 
         let accesses = [];
         userAccesses.forEach(userAccess => accesses.push(userAccess.access));
+        user._cachedAccesses = accesses;
+
         return accesses;
+    }
+
+    static async hasAccess(user, access){
+        let accesses = await UserManager.loadCachedAccessesForUser(user);
+        let accessNames = [];
+        accesses.forEach(access => accessNames.push(access.name));
+        return (accessNames.indexOf(access) !== -1);
     }
 
     static _generateSalt() {
