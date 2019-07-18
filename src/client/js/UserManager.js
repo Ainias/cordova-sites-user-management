@@ -3,7 +3,7 @@ import {DataManager, Helper, NativeStoragePromise, Toast} from "cordova-sites";
 export class UserManager {
 
     constructor() {
-        this._userData = {
+        this._defaultUserData = {
             id: null,
             loggedIn: false,
             online: false,
@@ -11,6 +11,7 @@ export class UserManager {
             email: null,
             accesses: UserManager.OFFLINE_ACCESSES,
         };
+        this._userData = this._defaultUserData;
 
         this._lastLoginChangeCallbackId = -1;
         this._loginChangeCallbacks = {};
@@ -81,11 +82,15 @@ export class UserManager {
         let data = await DataManager.load("user");
         if (Helper.isSet(data, "userData")) {
             this._userData = data.userData;
+        } else {
+            this._userData = this._defaultUserData;
         }
+        this._updateAccessClasses();
+
         if (Helper.isSet(data, "token")) {
             DataManager.setHeader("Authorization", "Bearer " + data.token);
             sessionStorage.setItem("auth-token", data.token);
-            if (Helper.isNotNull(await NativeStoragePromise.getItem("auth-token"))){
+            if (Helper.isNotNull(await NativeStoragePromise.getItem("auth-token"))) {
                 await NativeStoragePromise.setItem("auth-token", data.token);
             }
         }
@@ -101,7 +106,7 @@ export class UserManager {
             DataManager.setHeader("Authorization", "Bearer " + data.token);
             sessionStorage.setItem("auth-token", data.token);
             await this._doGetMe();
-            if (saveLogin){
+            if (saveLogin) {
                 await NativeStoragePromise.setItem("auth-token", data.token);
             }
             return true;
@@ -126,7 +131,7 @@ export class UserManager {
     async _doRegister(email, username, password) {
         let data = await DataManager.send("user/register", {
             "email": email,
-            "username":username,
+            "username": username,
             "password": password
         });
 
@@ -160,8 +165,20 @@ export class UserManager {
             DataManager.setHeader("Authorization", "Bearer " + token);
         }
     }
+
+    _updateAccessClasses() {
+        document.body.classList.forEach(cl => {
+            if (cl.startsWith(UserManager.ACCESS_CLASS_PREFIX)) {
+                document.body.classList.remove(cl);
+            }
+        });
+        this._userData.accesses.forEach(access => {
+            document.body.classList.add(UserManager.ACCESS_CLASS_PREFIX+access)
+        })
+    }
 }
 
+UserManager.ACCESS_CLASS_PREFIX = "access-";
 UserManager._instance = null;
 UserManager.OFFLINE_ACCESSES = [
     "offline"
