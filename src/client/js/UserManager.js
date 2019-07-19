@@ -44,6 +44,10 @@ export class UserManager {
         }, true);
     }
 
+    getUserData(){
+        return this._userData;
+    }
+
     async getMe() {
         let before = this._userData;
         let res = this._doGetMe();
