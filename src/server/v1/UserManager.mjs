@@ -5,6 +5,7 @@ import {EasySyncServerDb} from "cordova-sites-easy-sync/src/server/EasySyncServe
 import {ServerHelper} from "./ServerHelper";
 import {UserAccess} from "./model/UserAccess";
 import crypto from "crypto";
+import nodemailer from "nodemailer";
 import * as _typeorm from "typeorm";
 
 let typeorm = _typeorm;
@@ -30,7 +31,7 @@ export class UserManager {
                         password: decoded.passwordHash,
                         blocked: false,
                     };
-                    if (UserManager.LOGIN_NEED_TO_BE_ACTIVATED){
+                    if (UserManager.LOGIN_NEED_TO_BE_ACTIVATED) {
                         where["activated"] = true;
                     }
 
@@ -90,13 +91,13 @@ export class UserManager {
         }
     }
 
-    static async register(email, username, password){
-        if (!UserManager.REGISTRATION_CAN_REGISTER){
+    static async register(email, username, password) {
+        if (!UserManager.REGISTRATION_CAN_REGISTER) {
             throw new Error("Cannot register new user, since user registration is not activated!")
         }
 
         email = email.toLowerCase();
-        if (!UserManager.REGISTRATION_USERNAME_IS_CASE_SENSITIVE){
+        if (!UserManager.REGISTRATION_USERNAME_IS_CASE_SENSITIVE) {
             username = username.toLowerCase();
         }
         let otherUsers = await Promise.all([
@@ -104,10 +105,10 @@ export class UserManager {
             User.findOne({username: typeorm.Equal(username)}),
         ]);
 
-        if (otherUsers[0]){
+        if (otherUsers[0]) {
             throw new Error("A user with the email-address exists already!")
         }
-        if (otherUsers[1]){
+        if (otherUsers[1]) {
             throw new Error("A user with the username exists already!")
         }
 
@@ -125,6 +126,42 @@ export class UserManager {
         //TODO email senden
 
         return user;
+    }
+
+    static async sendPasswordResetEmail(user) {
+        let token = jwt.sign({userId: user.id, version: user.version, action: "pw-reset"},
+            process.env.JWT_SECRET, {
+                expiresIn: UserManager.EXPIRES_IN
+            }
+        );
+
+        let transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            secure: process.env.EMAIL_SECURE || true,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
+            }
+        });
+
+        let mailOptions = {
+            from: process.env.EMAIL_FROM,
+            to: user.email,
+            subject: UserManager.PASSWORD_FORGOTTEN_HEADER || "Passwort vergessen",
+            text: "Passwort fergessen!"
+        };
+
+        return new Promise((resolve, reject) => {
+            transporter.sendMail(mailOptions, (err, info) => {
+                if (err){
+                    reject(err)
+                }
+                else {
+                    resolve(info);
+                }
+            })
+        });
     }
 
     static _generateToken(user) {
@@ -182,7 +219,7 @@ export class UserManager {
     }
 
     static async loadCachedAccessesForUser(user, reload) {
-        if (user._cachedAccesses){
+        if (user._cachedAccesses) {
             return user._cachedAccesses;
         }
 
@@ -200,7 +237,7 @@ export class UserManager {
         return accesses;
     }
 
-    static async hasAccess(user, access){
+    static async hasAccess(user, access) {
         let accesses = await UserManager.loadCachedAccessesForUser(user);
         let accessNames = [];
         accesses.forEach(access => accessNames.push(access.name));
@@ -215,7 +252,7 @@ export class UserManager {
 
 UserManager.SALT_LENGTH = 12;
 UserManager.EXPIRES_IN = "7d";
-UserManager.RENEW_AFTER = 60*60*24;
+UserManager.RENEW_AFTER = 60 * 60 * 24;
 UserManager.PEPPER = "";
 
 UserManager.LOGIN_NEED_TO_BE_ACTIVATED = true;

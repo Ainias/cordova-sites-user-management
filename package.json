@@ -15,19 +15,19 @@
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "crypto": "^1.0.1",
-    "typeorm": "^0.2.17"
+    "typeorm": "^0.2.17",
+    "nodemailer": "^6.2.1",
+    "js-helper": "git+https://github.com/Ainias/js-helper"
   },
   "devDependencies": {
+    "nodemailer": "^6.2.1",
     "crypto": "^1.0.1",
+    "typeorm": "^0.2.17",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
+    "js-helper": "git+https://github.com/Ainias/js-helper",
     "cordova-sites": "git+https://github.com/Ainias/cordova-sites",
     "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync",
-    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database",
-    "rollup": "^1.6.0",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-html-import-file-path": "git+https://github.com/Ainias/rollup-plugin-html-import-file-path.git",
-    "rollup-plugin-import-file-path": "git+https://github.com/Ainias/rollup-plugin-import-file-path.git",
-    "rollup-plugin-json": "^3.1.0"
+    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database"
   }
 }

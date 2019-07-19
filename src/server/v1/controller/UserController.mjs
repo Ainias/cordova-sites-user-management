@@ -1,4 +1,5 @@
 import {UserManager} from "../UserManager";
+import jwt from "jsonwebtoken";
 
 export class UserController {
     static async login(req, res) {
@@ -74,5 +75,11 @@ export class UserController {
                 }
             });
         }
+    }
+
+    static sendPasswordResetMail(req, res){
+        let user = req.user;
+
+
     }
 }
