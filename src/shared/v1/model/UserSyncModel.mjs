@@ -27,12 +27,4 @@ export class UserSyncModel extends AccessEasySyncModel {
 
         return relations;
     }
-
-    static async getSyncWhere() {
-        return {
-            userId: UserSyncModel._CLIENT_USER_MANAGER.getUserData().id
-        }
-    }
 }
-
-UserSyncModel._CLIENT_USER_MANAGER = null;;

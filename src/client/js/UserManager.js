@@ -180,6 +180,15 @@ export class UserManager {
             document.body.classList.add(UserManager.ACCESS_CLASS_PREFIX+access)
         })
     }
+
+    static syncParamFor(model){
+        return {
+            model: model,
+            where: {
+                userId: this.getInstance().getUserData().id
+            }
+        }
+    }
 }
 
 UserManager.ACCESS_CLASS_PREFIX = "access-";
