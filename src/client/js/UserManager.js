@@ -191,6 +191,16 @@ export class UserManager {
         return (offlineData.accesses.indexOf(access) !== -1);
     }
 
+    async sendForgotPasswordEmail(email){
+        let data = await DataManager.send("user/forgotPW", {email: email});
+        return data.success;
+    }
+
+    async resetPassword(token, password){
+        let data = await DataManager.send("user/forgotPW/2", {token: token, password: password});
+        return data.success;
+    }
+
     isOnline(){
         return this._userData.online;
     }

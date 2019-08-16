@@ -1,5 +1,6 @@
 import {UserManager} from "../UserManager";
 import jwt from "jsonwebtoken";
+import {User} from "../../../shared/v1/model/User";
 
 export class UserController {
     static async login(req, res) {
@@ -77,9 +78,28 @@ export class UserController {
         }
     }
 
-    static sendPasswordResetMail(req, res){
-        let user = req.user;
+    static async sendPasswordResetMail(req, res) {
+        let email = req.body.email;
+        let user = await User.findOne({email: email});
+        if (user) {
+            let info = await UserManager.sendPasswordResetEmail(user, req.lang);
+            let success = (info.accepted.indexOf(email) !== -1);
+            await res.json({success: success});
+        }
+        else {
+            await res.json({success: false, message: "User not found!"})
+        }
+    }
 
+    static async resetPassword(req, res) {
+        let token = req.body.token;
+        let password = req.body.password;
 
+        if (await UserManager.resetPasswordWithToken(token, password)){
+            await res.json({success: true});
+        }
+        else {
+            await res.json({success: false});
+        }
     }
 }

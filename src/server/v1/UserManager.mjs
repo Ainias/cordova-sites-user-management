@@ -7,12 +7,13 @@ import {UserAccess} from "./model/UserAccess";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import * as _typeorm from "typeorm";
+import {ServerTranslator} from "cordova-sites/server";
+import {Helper} from "js-helper/dist/shared";
 
 let typeorm = _typeorm;
 if (typeorm.default) {
     typeorm = typeorm.default;
 }
-
 
 export class UserManager {
 
@@ -128,7 +129,7 @@ export class UserManager {
         return user;
     }
 
-    static async sendPasswordResetEmail(user) {
+    static async sendPasswordResetEmail(user, language) {
         let token = jwt.sign({userId: user.id, version: user.version, action: "pw-reset"},
             process.env.JWT_SECRET, {
                 expiresIn: UserManager.EXPIRES_IN
@@ -138,29 +139,66 @@ export class UserManager {
         let transporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: process.env.EMAIL_PORT,
-            secure: process.env.EMAIL_SECURE || true,
+            secure: Helper.nonNull(process.env.EMAIL_SECURE, "1") !== "0",
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASSWORD,
             }
         });
 
+        let serverTranslator = new ServerTranslator(language);
+
         let mailOptions = {
             from: process.env.EMAIL_FROM,
             to: user.email,
-            subject: UserManager.PASSWORD_FORGOTTEN_HEADER || "Passwort vergessen",
-            text: "Passwort fergessen!"
+            subject: serverTranslator.translate("email-header-usermanager-password-forgotten"),
+            text: serverTranslator.translate("email-usermanager-password-forgotten", [user.username, process.env.PW_FORGOTTEN_LINK + token])
         };
 
         return new Promise((resolve, reject) => {
             transporter.sendMail(mailOptions, (err, info) => {
-                if (err){
+                if (err) {
                     reject(err)
-                }
-                else {
+                } else {
                     resolve(info);
                 }
             })
+        });
+    }
+
+    static async resetPasswordWithToken(token, newPw) {
+        return new Promise((resolve, reject) => {
+
+            jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+                if (!err) {
+                    if (decoded.action === "pw-reset") {
+
+                        let where = {
+                            id: decoded.userId,
+                            version: decoded.version,
+                            blocked: false,
+                        };
+
+                        let user = await User.findOne(where);
+
+                        if (user) {
+                            user.password = UserManager._hashPassword(user, newPw);
+                            await user.save();
+                            resolve(true);
+                        } else {
+                            console.log("user with id " + decoded.userId + " for token not found while resetting password")
+                            resolve(false);
+                        }
+                    }
+                    else {
+                        resolve(false);
+                    }
+
+                } else {
+                    console.error(err);
+                    reject(err);
+                }
+            });
         });
     }
 

@@ -1,10 +1,11 @@
 import {UserSite} from "../Context/UserSite";
-import {App, Form, Helper, MenuSite, NavbarFragment, Toast} from "cordova-sites";
+import {App, DataManager, Form, Helper, MenuSite, NavbarFragment, Toast} from "cordova-sites";
 
 import view from "./../../html/sites/loginSite.html"
 import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";
 import {UserManager} from "../UserManager";
 import {UserMenuAction} from "../MenuAction/UserMenuAction";
+import {ForgotPasswordSite} from "./ForgotPasswordSite";
 
 export class LoginSite extends MenuSite {
     constructor(siteManager) {
@@ -16,15 +17,14 @@ export class LoginSite extends MenuSite {
         let res = super.onViewLoaded();
         let form = new Form(this.findBy("#login-form"), async data => {
             // await this.showLoadingSymbol();
-            if (await UserManager.getInstance().login(data["email"], data["password"], Helper.isNotNull(data["saveLogin"]))){
+            if (await UserManager.getInstance().login(data["email"], data["password"], Helper.isNotNull(data["saveLogin"]))) {
                 await new Toast("welcome back").show();
                 await this.finish();
-            }
-            else {
+            } else {
                 form.setErrors({
-                    "email":"email or password is wrong"
+                    "email": "email or password is wrong"
                 });
-            // await this.removeLoadingSymbol();
+                // await this.removeLoadingSymbol();
             }
         });
 
@@ -32,20 +32,25 @@ export class LoginSite extends MenuSite {
         this.findBy("#login-form [name=email]").addEventListener("keydown", listener);
         this.findBy("#login-form [name=password]").addEventListener("keydown", listener);
 
+        this.findBy("#forgot-pw").addEventListener("click", async () => {
+            this.startSite(ForgotPasswordSite);
+        });
+
         return res;
     }
 }
+
 LoginSite.ACCESS = "loggedOut";
 LoginSite.LOGOUT_ACCESS = "loggedIn";
 LoginSite.ADD_LOGIN_ACTION = true;
 LoginSite.ADD_LOGOUT_ACTION = true;
 
 App.addInitialization(app => {
-    if (LoginSite.ADD_LOGIN_ACTION){
+    if (LoginSite.ADD_LOGIN_ACTION) {
         NavbarFragment.defaultActions.push(new StartUserSiteMenuAction("login", LoginSite.ACCESS, LoginSite));
     }
-    if (LoginSite.ADD_LOGOUT_ACTION){
-        NavbarFragment.defaultActions.push(new UserMenuAction("logout", LoginSite.LOGOUT_ACCESS , async () => {
+    if (LoginSite.ADD_LOGOUT_ACTION) {
+        NavbarFragment.defaultActions.push(new UserMenuAction("logout", LoginSite.LOGOUT_ACCESS, async () => {
             await UserManager.getInstance().logout();
         }));
     }

@@ -16,5 +16,7 @@ const errorHandler = (fn) => {
 userRoutes.post("/login", errorHandler(UserController.login));
 userRoutes.post("/register", errorHandler(UserController.register));
 userRoutes.get("", errorHandler(UserManager.setUserFromToken), errorHandler(UserController.getMe));
+userRoutes.post("/forgotPW", errorHandler(UserController.sendPasswordResetMail));
+userRoutes.post("/forgotPW/2", errorHandler(UserController.resetPassword));
 
 export {userRoutes};
