@@ -44,7 +44,7 @@ export class UserManager {
         }, true);
     }
 
-    getUserData(){
+    getUserData() {
         return this._userData;
     }
 
@@ -89,6 +89,8 @@ export class UserManager {
         } else {
             this._userData = this._defaultUserData;
         }
+        await NativeStoragePromise.setItem("user-data", data.userData);
+
         this._updateAccessClasses();
 
         if (Helper.isSet(data, "token")) {
@@ -177,11 +179,27 @@ export class UserManager {
             }
         });
         this._userData.accesses.forEach(access => {
-            document.body.classList.add(UserManager.ACCESS_CLASS_PREFIX+access)
+            document.body.classList.add(UserManager.ACCESS_CLASS_PREFIX + access)
         })
     }
 
-    static syncParamFor(model){
+    async hasOfflineAccess(access) {
+        if (this.isOnline()) {
+            return false;
+        }
+        let offlineData = Helper.nonNull(await NativeStoragePromise.getItem("user-data"), {accesses: UserManager.OFFLINE_ACCESSES});
+        return (offlineData.accesses.indexOf(access) !== -1);
+    }
+
+    isOnline(){
+        return this._userData.online;
+    }
+
+    isLoggedIn(){
+        return this._userData.loggedIn;
+    }
+
+    static syncParamFor(model) {
         return {
             model: model,
             where: {

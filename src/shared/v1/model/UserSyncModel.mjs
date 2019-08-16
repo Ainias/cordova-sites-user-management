@@ -22,9 +22,10 @@ export class UserSyncModel extends AccessEasySyncModel {
                 name: "userId"
             },
             cascade: false,
-            nullable: true
+            nullable: !this.NEED_USER
         };
 
         return relations;
     }
 }
+UserSyncModel.NEED_USER = false;

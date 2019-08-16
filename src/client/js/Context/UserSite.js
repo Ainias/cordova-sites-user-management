@@ -1,38 +1,38 @@
+import {Helper} from "js-helper/dist/shared"
 import {DelegateSite, Toast} from "cordova-sites";
 import {UserManager} from "../UserManager";
+import {LoginSite} from "../Site/LoginSite";
 
 export class UserSite extends DelegateSite {
 
-    constructor(site, access) {
+    constructor(site, access, allowOfflineAccess) {
         super(site);
         this._access = access;
+        this._allowOfflineAccess = Helper.nonNull(allowOfflineAccess, false);
     }
 
     async onConstruct(constructParameters) {
-        if (UserManager.getInstance().hasAccess(this._access)) {
+        if (await this._checkRights()) {
             await super.onConstruct(constructParameters);
-        } else {
-            await new Toast("wrong rights").show();
-            await this.finish();
         }
     }
 
-
-    // async onViewLoaded(...args) {
-    //     if (UserManager.getInstance().hasAccess(this._access)) {
-    //         await super.onViewLoaded(...args);
-    //     } else {
-    //         await new Toast("wrong rights").show();
-    //         this.finish();
-    //     }
-    // }
-    //
-    async onStart(...args) {
-        if (UserManager.getInstance().hasAccess(this._access)) {
-            await super.onStart(...args);
-        } else {
+    async _checkRights() {
+        console.log(this._access, UserManager.getInstance().hasAccess(this._access), this._allowOfflineAccess, await UserManager.getInstance().hasOfflineAccess(this._access), UserManager.getInstance());
+        if (!(UserManager.getInstance().hasAccess(this._access) || (this._allowOfflineAccess && await UserManager.getInstance().hasOfflineAccess(this._access)))) {
             await new Toast("wrong rights").show();
-            this.finish();
+            if (UserManager.getInstance().isOnline() && !UserManager.getInstance().isLoggedIn() && !(this._site instanceof LoginSite)){
+                this.startSite(LoginSite, {deepLink: this._site._siteManager.getDeepLinkFor(this._site), args: this._site.getParameters()});
+            }
+            await this.finish();
+            return false;
+        }
+        return true;
+    }
+
+    async onStart(...args) {
+        if (await this._checkRights()) {
+            await super.onStart(...args);
         }
     }
 }
