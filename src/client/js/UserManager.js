@@ -191,21 +191,21 @@ export class UserManager {
         return (offlineData.accesses.indexOf(access) !== -1);
     }
 
-    async sendForgotPasswordEmail(email){
+    async sendForgotPasswordEmail(email) {
         let data = await DataManager.send("user/forgotPW", {email: email});
         return data.success;
     }
 
-    async resetPassword(token, password){
+    async resetPassword(token, password) {
         let data = await DataManager.send("user/forgotPW/2", {token: token, password: password});
         return data.success;
     }
 
-    isOnline(){
+    isOnline() {
         return this._userData.online;
     }
 
-    isLoggedIn(){
+    isLoggedIn() {
         return this._userData.loggedIn;
     }
 
@@ -213,7 +213,7 @@ export class UserManager {
         return {
             model: model,
             where: {
-                userId: this.getInstance().getUserData().id
+                user: {id: this.getInstance().getUserData().id}
             }
         }
     }

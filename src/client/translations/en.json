@@ -19,5 +19,15 @@
   "email is already in use.": "This e-mail is already in use.",
   "username is already in use.": "This Username is already taken.",
 
-  "wrong rights": "Wrong Rights!"
+  "wrong rights": "Wrong Rights!",
+
+  "passwort vergessen?": "password forgotten?",
+  "password forgotten": "Password Forgotten",
+  "request new password": "Request New Password",
+
+  "email is not in our database": "The given E-Mailaddress is not registered!",
+  "forgot-password-mail sent": "We sent you an E-Mail with instructions",
+
+  "password resetted": "The password was successfully changed.",
+  "token is not valid": "The given link is no longer valid."
 }

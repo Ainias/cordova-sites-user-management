@@ -26,12 +26,11 @@ export class SyncController extends EasySyncController {
         if (model.prototype instanceof AccessEasySyncModel){
             let user = req.user;
             if (model.ACCESS_MODIFY === false || (model.ACCESS_MODIFY !== true && (!user || !(await UserManager.hasAccess(user, model.ACCESS_MODIFY))))){
-                throw new Error("user " + (user ? user.id : "null") + " tried to modify model " + model.getSchemaName() + " without permission");
+                throw new Error("user " + (user ? user.id : "null") + " tried to modify model " + model.getSchemaName() + " without permission!");
             }
         } else if (model.CAN_BE_SYNCED === false) {
             throw new Error("tried to sync unsyncable model " + model.getSchemaName());
         }
-
         res.json(await this._doModifyModel(model, modelData));
     }
 
