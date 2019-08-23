@@ -1,11 +1,11 @@
-import jwt from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 import {User} from "../../shared/v1/model/User";
 import {Role} from "../../shared/v1/model/Role";
 import {EasySyncServerDb} from "cordova-sites-easy-sync/src/server/EasySyncServerDb";
 import {Helper} from "js-helper/dist/shared";
 import {UserAccess} from "./model/UserAccess";
-import crypto from "crypto";
-import nodemailer from "nodemailer";
+import * as crypto from "crypto";
+import * as nodemailer from "nodemailer";
 import * as _typeorm from "typeorm";
 import {ServerTranslator} from "cordova-sites/server";
 
