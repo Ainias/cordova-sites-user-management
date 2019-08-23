@@ -1,4 +1,4 @@
-import express from 'express';
+import * as express from 'express';
 import {SyncController} from "../controller/SyncController";
 import {UserManager} from "../UserManager";
 

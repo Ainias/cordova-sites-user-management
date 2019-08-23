@@ -31,7 +31,7 @@ export class SyncController extends EasySyncController {
         } else if (model.CAN_BE_SYNCED === false) {
             throw new Error("tried to sync unsyncable model " + model.getSchemaName());
         }
-        res.json(await this._doModifyModel(model, modelData));
+        return res.json(await this._doModifyModel(model, modelData));
     }
 
     static async deleteModel(req, res) {
@@ -52,6 +52,6 @@ export class SyncController extends EasySyncController {
 
         await this._doDeleteModel(model, modelIds);
 
-        res.json({});
+        return res.json({});
     }
 }

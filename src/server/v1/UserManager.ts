@@ -2,20 +2,32 @@ import jwt from "jsonwebtoken";
 import {User} from "../../shared/v1/model/User";
 import {Role} from "../../shared/v1/model/Role";
 import {EasySyncServerDb} from "cordova-sites-easy-sync/src/server/EasySyncServerDb";
-import {ServerHelper} from "./ServerHelper";
+import {Helper} from "js-helper/dist/shared";
 import {UserAccess} from "./model/UserAccess";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import * as _typeorm from "typeorm";
 import {ServerTranslator} from "cordova-sites/server";
-import {Helper} from "js-helper/dist/shared";
 
 let typeorm = _typeorm;
-if (typeorm.default) {
-    typeorm = typeorm.default;
-}
+// if (typeorm.default) {
+//     typeorm = typeorm.default;
+// }
 
 export class UserManager {
+
+    static SALT_LENGTH: number;
+    static RENEW_AFTER: number = 60 * 60 * 24;
+    static PEPPER: string;
+
+    static REGISTRATION_SEND_EMAIL: boolean = true;
+
+    static LOGIN_NEED_TO_BE_ACTIVATED: boolean;
+    static REGISTRATION_CAN_REGISTER: boolean;
+    static REGISTRATION_USERNAME_IS_CASE_SENSITIVE: boolean;
+    static REGISTRATION_IS_ACTIVATED: boolean;
+    static REGISTRATION_DEFAULT_ROLE_IDS;
+    static EXPIRES_IN;
 
     static setUserFromToken(req, res, next) {
         let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
@@ -129,7 +141,7 @@ export class UserManager {
         return user;
     }
 
-    static async sendPasswordResetEmail(user, language) {
+    static async sendPasswordResetEmail(user, language) : Promise<any>{
         let token = jwt.sign({userId: user.id, version: user.version, action: "pw-reset"},
             process.env.JWT_SECRET, {
                 expiresIn: UserManager.EXPIRES_IN
@@ -189,8 +201,7 @@ export class UserManager {
                             console.log("user with id " + decoded.userId + " for token not found while resetting password")
                             resolve(false);
                         }
-                    }
-                    else {
+                    } else {
                         resolve(false);
                     }
 
@@ -222,7 +233,7 @@ export class UserManager {
         //Reload roles with accesses
         roles = await Role.findByIds(roleIds, ["accesses"]);
 
-        await ServerHelper.asyncForEach(roles, async role => {
+        await Helper.asyncForEach(roles, async role => {
             accesses.push(...await this.findAccessesForRole(role))
         });
 
@@ -239,7 +250,7 @@ export class UserManager {
             .where('child.id = :id', {id: role.id})
             .getMany();
 
-        await ServerHelper.asyncForEach(parents, async role => {
+        await Helper.asyncForEach(parents, async role => {
             let otherAccesses = await this.findAccessesForRole(role);
             accesses.push(...otherAccesses);
         });
@@ -248,7 +259,7 @@ export class UserManager {
 
     static async updateCachedAccessesForUser(user) {
         let userAccesses = await UserManager.findAccessesForUser(user);
-        await ServerHelper.asyncForEach(userAccesses, (async access => {
+        await Helper.asyncForEach(userAccesses, (async access => {
             let userAccess = new UserAccess();
             userAccess.user = user;
             userAccess.access = access;
@@ -256,7 +267,7 @@ export class UserManager {
         }), false);
     }
 
-    static async loadCachedAccessesForUser(user, reload) {
+    static async loadCachedAccessesForUser(user, reload?) {
         if (user._cachedAccesses) {
             return user._cachedAccesses;
         }

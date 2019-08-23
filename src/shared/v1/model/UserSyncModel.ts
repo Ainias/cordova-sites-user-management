@@ -1,17 +1,9 @@
 import {AccessEasySyncModel} from "./AccessEasySyncModel";
-import {BaseDatabase} from "cordova-sites-database";
 import {User} from "./User";
 
 export class UserSyncModel extends AccessEasySyncModel {
 
-    // static getColumnDefinitions() {
-    //     let columns = super.getColumnDefinitions();
-    //     columns["userId"] = {
-    //         type: BaseDatabase.TYPES.INTEGER,
-    //         nullable: true
-    //     };
-    //     return columns;
-    // }
+    static NEED_USER: boolean;
 
     static getRelationDefinitions() {
         let relations = super.getRelationDefinitions();

@@ -1,6 +1,6 @@
-import {App, Form, MenuSite, NavbarFragment, Toast} from "cordova-sites";
+import {App, Form, MenuSite, NavbarFragment, Toast} from "cordova-sites/dist/cordova-sites";
 
-import view from "./../../html/sites/registrationSite.html"
+const view = require("./../../html/sites/registrationSite.html");
 import {UserSite} from "../Context/UserSite";
 import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";
 import {UserManager} from "../UserManager";
@@ -8,6 +8,8 @@ import {User} from "../../../shared/v1/model/User";
 
 
 export class RegistrationSite extends MenuSite{
+    static ACCESS: string;
+    static ADD_REGISTRATION_ACTION: boolean;
 
     constructor(siteManager) {
         super(siteManager, view);
@@ -18,7 +20,7 @@ export class RegistrationSite extends MenuSite{
         let res = super.onViewLoaded();
         let form = new Form(this.findBy("#registration-form"), async data => {
             let result = await UserManager.getInstance().register(data["email"], data["username"], data["password"]);
-            if (result instanceof User || result === true){
+            if ((result instanceof User) || result === true){
                 await new Toast("registration successful").show();
                 await this.finish();
             }

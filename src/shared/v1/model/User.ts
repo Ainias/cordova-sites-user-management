@@ -1,8 +1,17 @@
 import {EasySyncBaseModel} from "cordova-sites-easy-sync/model";
-import {BaseDatabase} from "cordova-sites-database";
+import {BaseDatabase} from "cordova-sites-database/dist/cordova-sites-database";
 import {Role} from "./Role";
 
 export class User extends EasySyncBaseModel{
+
+    username: string;
+    email: string;
+    password: string;
+    roles;
+    activated: boolean;
+    blocked: boolean;
+    salt: string;
+
     constructor() {
         super();
         this.username = null;

@@ -1,13 +1,17 @@
 import {UserSite} from "../Context/UserSite";
-import {App, DataManager, Form, Helper, MenuSite, NavbarFragment, Toast} from "cordova-sites";
+import {App, Form, Helper, MenuSite, NavbarFragment, Toast} from "cordova-sites/dist/cordova-sites";
 
-import view from "./../../html/sites/loginSite.html"
+const view = require( "./../../html/sites/loginSite.html");
 import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";
 import {UserManager} from "../UserManager";
 import {UserMenuAction} from "../MenuAction/UserMenuAction";
 import {ForgotPasswordSite} from "./ForgotPasswordSite";
 
 export class LoginSite extends MenuSite {
+    static ACCESS: string;
+    static LOGOUT_ACCESS: string;
+    static ADD_LOGIN_ACTION: boolean;
+    static ADD_LOGOUT_ACTION: boolean;
     constructor(siteManager) {
         super(siteManager, view);
         this.addDelegate(new UserSite(this, LoginSite.ACCESS));

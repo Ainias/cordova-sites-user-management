@@ -1,8 +1,11 @@
-import {Helper, MenuAction} from "cordova-sites";
+import {Helper, MenuAction} from "cordova-sites/dist/cordova-sites";
 import {UserManager} from "../UserManager";
 
 export class UserMenuAction extends MenuAction{
-    constructor(name, access, action, showFor, order, icon) {
+    private _access: any;
+    private _loginChangedCallbackId: number;
+
+    constructor(name?, access?, action?, showFor?, order?, icon?) {
         super(name, action, showFor, order, icon);
         this._access = access;
         this._loginChangedCallbackId = UserManager.getInstance().addLoginChangeCallback(() => {

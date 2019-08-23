@@ -1,10 +1,12 @@
-import {BaseModel} from "cordova-sites-database";
-import {BaseDatabase} from "cordova-sites-database";
+import {BaseDatabase, BaseModel} from "cordova-sites-database/dist/cordova-sites-database";
 import {Access} from "../../../shared/v1/model/Access";
 import {User} from "../../../shared/v1/model/User";
-// import {Role} from "./Role";
 
 export class UserAccess extends BaseModel{
+
+    user;
+    access;
+
     constructor() {
         super();
         this.user = null;

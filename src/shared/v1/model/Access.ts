@@ -1,8 +1,12 @@
 import {EasySyncBaseModel} from "cordova-sites-easy-sync/model";
-import {BaseDatabase} from "cordova-sites-database";
+import {BaseDatabase} from "cordova-sites-database/dist/cordova-sites-database";
 // import {Role} from "./Role";
 
 export class Access extends EasySyncBaseModel{
+
+    name: string;
+    description: string;
+
     constructor() {
         super();
         this.name = null;

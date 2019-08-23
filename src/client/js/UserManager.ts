@@ -1,6 +1,15 @@
-import {DataManager, Helper, NativeStoragePromise, Toast} from "cordova-sites";
+import {DataManager, Helper, NativeStoragePromise, Toast} from "cordova-sites/dist/cordova-sites";
 
 export class UserManager {
+
+    static OFFLINE_ACCESSES: any;
+    static _instance: UserManager;
+    static ACCESS_CLASS_PREFIX: string;
+
+    protected _defaultUserData: { loggedIn: boolean; online: boolean; id: null; accesses: any; email: null; username: null };
+    protected _userData: { loggedIn: boolean; online: boolean; id: null; accesses: any; email: null; username: null };
+    protected _lastLoginChangeCallbackId: number;
+    protected _loginChangeCallbacks: {};
 
     constructor() {
         this._defaultUserData = {
@@ -17,7 +26,7 @@ export class UserManager {
         this._loginChangeCallbacks = {};
     }
 
-    addLoginChangeCallback(callback, callImmediately) {
+    addLoginChangeCallback(callback, callImmediately?) {
         this._lastLoginChangeCallbackId++;
         this._loginChangeCallbacks[this._lastLoginChangeCallbackId] = callback;
 
@@ -55,7 +64,7 @@ export class UserManager {
         return res;
     }
 
-    async login(email, password, saveLogin) {
+    async login(email, password, saveLogin?) {
         let before = this._userData;
         let res = await this._doLogin(email, password, saveLogin);
         await this._checkChangedLogin(before);
@@ -81,15 +90,15 @@ export class UserManager {
         return res;
     }
 
-    async _doGetMe() {
+    async _doGetMe(): Promise<any> {
         await UserManager.updateHeaders();
         let data = await DataManager.load("user");
         if (Helper.isSet(data, "userData")) {
+            await NativeStoragePromise.setItem("user-data", data.userData);
             this._userData = data.userData;
         } else {
             this._userData = this._defaultUserData;
         }
-        await NativeStoragePromise.setItem("user-data", data.userData);
 
         this._updateAccessClasses();
 
@@ -134,7 +143,7 @@ export class UserManager {
         return true;
     }
 
-    async _doRegister(email, username, password) {
+    async _doRegister(email, username, password): Promise<any> {
         let data = await DataManager.send("user/register", {
             "email": email,
             "username": username,
@@ -220,7 +229,6 @@ export class UserManager {
 }
 
 UserManager.ACCESS_CLASS_PREFIX = "access-";
-UserManager._instance = null;
 UserManager.OFFLINE_ACCESSES = [
     "offline"
 ];

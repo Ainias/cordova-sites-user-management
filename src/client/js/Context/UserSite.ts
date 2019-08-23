@@ -1,11 +1,13 @@
 import {Helper} from "js-helper/dist/shared"
-import {DelegateSite, Toast} from "cordova-sites";
+import {DelegateSite, Toast} from "cordova-sites/dist/cordova-sites";
 import {UserManager} from "../UserManager";
 import {LoginSite} from "../Site/LoginSite";
 
 export class UserSite extends DelegateSite {
+    private _access: any;
+    private _allowOfflineAccess: boolean;
 
-    constructor(site, access, allowOfflineAccess) {
+    constructor(site, access, allowOfflineAccess?) {
         super(site);
         this._access = access;
         this._allowOfflineAccess = Helper.nonNull(allowOfflineAccess, false);
@@ -13,7 +15,7 @@ export class UserSite extends DelegateSite {
 
     async onConstruct(constructParameters) {
         if (await this._checkRights()) {
-            await super.onConstruct(constructParameters);
+            return await super.onConstruct(constructParameters);
         }
     }
 
@@ -29,9 +31,9 @@ export class UserSite extends DelegateSite {
         return true;
     }
 
-    async onStart(...args) {
+    async onStart(args) {
         if (await this._checkRights()) {
-            await super.onStart(...args);
+            await super.onStart(args);
         }
     }
 }

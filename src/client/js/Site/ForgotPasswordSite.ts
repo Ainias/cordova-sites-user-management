@@ -1,11 +1,13 @@
 import {UserSite} from "../Context/UserSite";
-import {App, Form, Helper, MenuSite, Toast} from "cordova-sites";
+import {App, Form, Helper, MenuSite, Toast} from "cordova-sites/dist/cordova-sites";
 
-import view from "./../../html/sites/forgotPasswordSite.html"
+const view = require( "./../../html/sites/forgotPasswordSite.html");
 import {UserManager} from "../UserManager";
 import {LoginSite} from "./LoginSite";
 
 export class ForgotPasswordSite extends MenuSite {
+    private _token: any;
+
     constructor(siteManager) {
         super(siteManager, view);
         this.addDelegate(new UserSite(this, LoginSite.ACCESS));

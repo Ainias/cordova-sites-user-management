@@ -1,5 +1,4 @@
 import {UserManager} from "../UserManager";
-import jwt from "jsonwebtoken";
 import {User} from "../../../shared/v1/model/User";
 
 export class UserController {

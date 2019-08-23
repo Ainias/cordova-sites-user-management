@@ -1,4 +1,4 @@
-import express from 'express';
+import * as express from 'express';
 import {UserController} from "../controller/UserController";
 import {UserManager} from "../UserManager";
 

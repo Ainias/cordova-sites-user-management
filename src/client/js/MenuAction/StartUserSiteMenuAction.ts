@@ -1,8 +1,8 @@
 import {UserMenuAction} from "./UserMenuAction";
-import {StartSiteMenuAction} from "cordova-sites";
+import {StartSiteMenuAction} from "cordova-sites/dist/cordova-sites";
 
 export class StartUserSiteMenuAction extends UserMenuAction{
-    constructor(name, access, site, showFor, order, icon) {
+    constructor(name?, access?, site?, showFor?, order?, icon?) {
         super(name, access, () => {
             if (StartSiteMenuAction._app) {
                 if (Array.isArray(site) && site.length >= 2) {
