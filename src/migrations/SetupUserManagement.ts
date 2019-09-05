@@ -1,24 +1,13 @@
 import {MigrationInterface, QueryRunner, Table} from "typeorm";
 import {BaseDatabase} from "cordova-sites-database/dist/cordova-sites-database";
 
-export class SetupUserManagement1566377719953 implements MigrationInterface {
+export class SetupUserManagement1000000001000 implements MigrationInterface {
 
     _isServer(): boolean {
         return (typeof document !== "object")
     }
 
     async up(queryRunner: QueryRunner): Promise<any> {
-        await queryRunner.dropTable("roleAccess", true);
-        await queryRunner.dropTable("roleChildren", true);
-        await queryRunner.dropTable("userRole", true);
-        if (this._isServer()) {
-            await queryRunner.dropTable("user_access", true);
-        }
-
-        await queryRunner.dropTable("access", true);
-        await queryRunner.dropTable("role", true);
-        await queryRunner.dropTable("user", true);
-
         await this._addAccess(queryRunner);
 
         await this._addRole(queryRunner);
@@ -44,7 +33,8 @@ export class SetupUserManagement1566377719953 implements MigrationInterface {
                     name: "id",
                     isPrimary: true,
                     type: BaseDatabase.TYPES.INTEGER,
-                    isGenerated: (typeof document !== "object")
+                    isGenerated: this._isServer(),
+                    generationStrategy: "increment" as "increment"
                 },
                 {
                     name: "createdAt",
@@ -84,7 +74,8 @@ export class SetupUserManagement1566377719953 implements MigrationInterface {
                     name: "id",
                     isPrimary: true,
                     type: BaseDatabase.TYPES.INTEGER,
-                    isGenerated: (typeof document !== "object")
+                    isGenerated: this._isServer(),
+                    generationStrategy: "increment" as "increment"
                 },
                 {
                     name: "createdAt",
@@ -123,7 +114,8 @@ export class SetupUserManagement1566377719953 implements MigrationInterface {
                     name: "id",
                     isPrimary: true,
                     type: BaseDatabase.TYPES.INTEGER,
-                    isGenerated: (typeof document !== "object")
+                    isGenerated: this._isServer(),
+                    generationStrategy: "increment" as "increment"
                 },
                 {
                     name: "createdAt",
@@ -318,6 +310,7 @@ export class SetupUserManagement1566377719953 implements MigrationInterface {
                     name: "id",
                     isPrimary: true,
                     isGenerated: this._isServer(),
+                    generationStrategy: "increment" as "increment",
                     type: BaseDatabase.TYPES.INTEGER
                 },
                 {
