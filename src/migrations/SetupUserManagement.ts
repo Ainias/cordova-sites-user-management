@@ -150,17 +150,14 @@ export class SetupUserManagement1000000001000 implements MigrationInterface {
                 {
                     name: "activated",
                     type: BaseDatabase.TYPES.BOOLEAN,
-                    isUnique: true
                 },
                 {
                     name: "blocked",
                     type: BaseDatabase.TYPES.BOOLEAN,
-                    isUnique: true
                 },
                 {
                     name: "salt",
                     type: BaseDatabase.TYPES.STRING,
-                    isUnique: true
                 },
             ]
         });
