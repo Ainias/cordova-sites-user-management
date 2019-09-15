@@ -21,7 +21,6 @@ export class UserController {
 
     static async register(req, res) {
         try {
-
             let user = await UserManager.register(req.body.email, req.body.username, req.body.password);
             res.json({
                 success: true,
@@ -29,6 +28,7 @@ export class UserController {
                 user: user
             });
         } catch (e) {
+            console.error(e);
             res.status(400);
             res.json({
                 success: false,

@@ -22,7 +22,7 @@ export class LoginSite extends MenuSite {
         let form = new Form(this.findBy("#login-form"), async data => {
             // await this.showLoadingSymbol();
             if (await UserManager.getInstance().login(data["email"], data["password"], Helper.isNotNull(data["saveLogin"]))) {
-                await new Toast("welcome back").show();
+                new Toast("welcome back").show();
                 await this.finish();
             } else {
                 form.setErrors({

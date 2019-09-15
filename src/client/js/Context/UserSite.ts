@@ -15,15 +15,24 @@ export class UserSite extends DelegateSite {
 
     async onConstruct(constructParameters) {
         if (await this._checkRights()) {
-            return await super.onConstruct(constructParameters);
+            let res = await super.onConstruct(constructParameters);
+            UserManager.getInstance().addLoginChangeCallback(async () => {
+                await this._checkRights();
+            }, false);
+            return res;
         }
     }
 
     async _checkRights() {
         if (!(UserManager.getInstance().hasAccess(this._access) || (this._allowOfflineAccess && await UserManager.getInstance().hasOfflineAccess(this._access)))) {
-            await new Toast("wrong rights").show();
-            if (UserManager.getInstance().isOnline() && !UserManager.getInstance().isLoggedIn() && !(this._site instanceof LoginSite)){
-                this.startSite(LoginSite, {deepLink: this._site._siteManager.getDeepLinkFor(this._site), args: this._site.getParameters()});
+            if (this.isShowing()) {
+                new Toast("wrong rights").show();
+            }
+            if (UserManager.getInstance().isOnline() && !UserManager.getInstance().isLoggedIn() && !(this._site instanceof LoginSite)) {
+                this.startSite(LoginSite, {
+                    deepLink: this._site._siteManager.getDeepLinkFor(this._site),
+                    args: this._site.getParameters()
+                });
             }
             await this.finish();
             return false;

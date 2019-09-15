@@ -59,7 +59,7 @@ export class UserManager {
 
     async getMe() {
         let before = this._userData;
-        let res = this._doGetMe();
+        let res = await this._doGetMe();
         await this._checkChangedLogin(before);
         return res;
     }
