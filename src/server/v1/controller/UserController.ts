@@ -95,9 +95,11 @@ export class UserController {
         let password = req.body.password;
 
         if (await UserManager.resetPasswordWithToken(token, password)){
+            console.log("success");
             await res.json({success: true});
         }
         else {
+            console.log("no success");
             await res.json({success: false});
         }
     }

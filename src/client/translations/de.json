@@ -23,5 +23,8 @@
   "email is not in our database": "Die E-Mail ist nicht registriert!",
   "forgot-password-mail sent": "Es wurde eine E-Mail an die angegebene Adresse gesendet.",
   "password resetted": "Das Passwort wurde erfolgreich zurückgesetzt.",
-  "token is not valid": "Der Link ist nicht mehr gültig."
+  "token is not valid": "Der Link ist nicht mehr gültig.",
+  "reset password": "Passwort zurücksetzen",
+  "repeat password": "Passwort wiederholen",
+  "token not valid": "Der Link ist nicht mehr gültig"
 }

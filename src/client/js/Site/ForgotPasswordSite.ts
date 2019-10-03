@@ -25,7 +25,7 @@ export class ForgotPasswordSite extends MenuSite {
         let res = super.onViewLoaded();
         let form = new Form(this.findBy("#forgot-password-form"), async data => {
             if (await UserManager.getInstance().sendForgotPasswordEmail(data["email"])){
-                await new Toast("forgot-password-mail sent").show();
+                new Toast("forgot-password-mail sent").show();
                 await this.finish();
             }
             else {
@@ -36,8 +36,8 @@ export class ForgotPasswordSite extends MenuSite {
         });
 
         let resetForm = new Form(this.findBy("#reset-password-form"), async data => {
-            if (UserManager.getInstance().resetPassword(this._token, data["password1"])){
-                await new Toast("password resetted").show();
+            if (await UserManager.getInstance().resetPassword(this._token, data["password1"])){
+                new Toast("password resetted").show();
                 await this.finish();
             }
             else {

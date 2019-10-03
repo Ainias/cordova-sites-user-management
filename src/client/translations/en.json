@@ -30,5 +30,8 @@
   "forgot-password-mail sent": "We sent you an E-Mail with instructions",
 
   "password resetted": "The password was successfully changed.",
-  "token is not valid": "The given link is no longer valid."
+  "token is not valid": "The given link is no longer valid.",
+  "reset password": "Reset Password",
+  "repeat password": "Repeat Password",
+  "token not valid": "The link is not valid any more"
 }

@@ -132,7 +132,6 @@ export class UserManager {
         user.activated = UserManager.REGISTRATION_IS_ACTIVATED;
         user.blocked = false;
         user.roles = await Role.findByIds(UserManager.REGISTRATION_DEFAULT_ROLE_IDS);
-        console.log(user);
         await user.save();
 
         await UserManager.updateCachedAccessesForUser(user);
@@ -199,7 +198,7 @@ export class UserManager {
                             await user.save();
                             resolve(true);
                         } else {
-                            console.log("user with id " + decoded.userId + " for token not found while resetting password")
+                            console.log("user with id " + decoded.userId + " for token not found while resetting password");
                             resolve(false);
                         }
                     } else {

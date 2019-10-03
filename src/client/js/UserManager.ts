@@ -207,6 +207,7 @@ export class UserManager {
 
     async resetPassword(token, password) {
         let data = await DataManager.send("user/forgotPW/2", {token: token, password: password});
+        console.log("pw-reset", data);
         return data.success;
     }
 
