@@ -180,7 +180,6 @@ export class UserManager {
 
     static async resetPasswordWithToken(token, newPw) {
         return new Promise((resolve, reject) => {
-
             jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
                 if (!err) {
                     if (decoded.action === "pw-reset") {
