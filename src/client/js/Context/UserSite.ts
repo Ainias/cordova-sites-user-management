@@ -25,7 +25,8 @@ export class UserSite extends DelegateSite {
 
     async _checkRights() {
         if (!(UserManager.getInstance().hasAccess(this._access) || (this._allowOfflineAccess && await UserManager.getInstance().hasOfflineAccess(this._access)))) {
-            if (this.isShowing()) {
+            if (this.isShowing() && !this.isDestroying()) {
+                console.log("show wrong-rights toast");
                 new Toast("wrong rights").show();
             }
             if (UserManager.getInstance().isOnline() && !UserManager.getInstance().isLoggedIn() && !(this._site instanceof LoginSite)) {

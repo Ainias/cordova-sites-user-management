@@ -67,7 +67,10 @@ export class UserManager {
     async login(email, password, saveLogin?) {
         let before = this._userData;
         let res = await this._doLogin(email, password, saveLogin);
-        await this._checkChangedLogin(before);
+        //do it after the result is returned
+        setTimeout(() => {
+            this._checkChangedLogin(before);
+        }, 1);
         return res;
     }
 
