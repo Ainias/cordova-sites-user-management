@@ -4,10 +4,12 @@ import {Role} from "../../shared/v1/model/Role";
 import {EasySyncServerDb} from "cordova-sites-easy-sync/src/server/EasySyncServerDb";
 import {Helper} from "js-helper/dist/shared";
 import {UserAccess} from "./model/UserAccess";
-import * as crypto from "crypto";
+// import * as crypto from "crypto";
 import * as nodemailer from "nodemailer";
 import * as _typeorm from "typeorm";
 import {ServerTranslator} from "cordova-sites/server";
+
+const crypto = require("crypto");
 
 let typeorm = _typeorm;
 // if (typeorm.default) {
