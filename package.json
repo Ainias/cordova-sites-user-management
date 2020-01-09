@@ -9,25 +9,23 @@
   },
   "author": "Silas Günther",
   "peerDependencies": {
-    "cordova-sites": "git+https://github.com/Ainias/cordova-sites",
-    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#v0.1",
-    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database",
+    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.2",
+    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.2",
+    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.2",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
-    "crypto": "^1.0.1",
     "typeorm": "^0.2.17",
     "nodemailer": "^6.2.1",
-    "js-helper": "git+https://github.com/Ainias/js-helper"
+    "js-helper": "git+https://github.com/Ainias/js-helper#0.2"
   },
   "devDependencies": {
     "nodemailer": "^6.2.1",
-    "crypto": "^1.0.1",
     "typeorm": "^0.2.17",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
-    "js-helper": "git+https://github.com/Ainias/js-helper",
-    "cordova-sites": "git+https://github.com/Ainias/cordova-sites",
-    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#v0.1",
-    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database"
+    "js-helper": "git+https://github.com/Ainias/js-helper#0.2",
+    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.2",
+    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.2",
+    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.2"
   }
 }
