@@ -1,5 +1,6 @@
-import {Helper, MenuAction} from "cordova-sites/dist/cordova-sites";
+import {MenuAction} from "cordova-sites/dist/cordova-sites";
 import {UserManager} from "../UserManager";
+import {Helper} from "js-helper/dist/shared/Helper";
 
 export class UserMenuAction extends MenuAction{
     private _access: any;

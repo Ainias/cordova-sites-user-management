@@ -1,8 +1,9 @@
 import {EasySyncClientDb} from "cordova-sites-easy-sync/client";
-import {Helper, NativeStoragePromise} from "cordova-sites/dist/cordova-sites";
+import {NativeStoragePromise} from "cordova-sites/dist/cordova-sites";
 import {UserManager} from "./UserManager";
 import {Role} from "../../shared/v1/model/Role";
 import {User} from "../../shared/v1/model/User";
+import {Helper} from "js-helper/dist/shared/Helper";
 
 export class OfflineUserManager extends UserManager {
 

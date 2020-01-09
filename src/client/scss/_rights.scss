@@ -1,0 +1,9 @@
+$rights: [admin, loggedIn, loggedOut, online, offline, default ];
+
+body {
+  @each $right in $rights {
+    &:not(.access-#{$right}) .access-#{$right} {
+      display: none
+    }
+  }
+}
