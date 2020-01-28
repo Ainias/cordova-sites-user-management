@@ -1,4 +1,4 @@
-import {MenuAction} from "cordova-sites/dist/cordova-sites";
+import {MenuAction} from "cordova-sites/dist/client";
 import {UserManager} from "../UserManager";
 import {Helper} from "js-helper/dist/shared/Helper";
 

@@ -1,5 +1,5 @@
 import {UserMenuAction} from "./UserMenuAction";
-import {StartSiteMenuAction} from "cordova-sites/dist/cordova-sites";
+import {StartSiteMenuAction} from "cordova-sites/dist/client";
 
 export class StartUserSiteMenuAction extends UserMenuAction{
     constructor(name?, access?, site?, showFor?, order?, icon?) {

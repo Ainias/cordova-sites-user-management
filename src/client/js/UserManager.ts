@@ -1,4 +1,4 @@
-import {DataManager, Helper, NativeStoragePromise, Toast} from "cordova-sites/dist/cordova-sites";
+import {DataManager, Helper, NativeStoragePromise, Toast} from "cordova-sites/dist/client";
 
 export class UserManager {
 

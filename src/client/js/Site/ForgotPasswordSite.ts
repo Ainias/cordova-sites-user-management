@@ -1,5 +1,5 @@
 import {UserSite} from "../Context/UserSite";
-import {App, Form, Helper, MenuSite, Toast} from "cordova-sites/dist/cordova-sites";
+import {App, Form, Helper, MenuSite, Toast} from "cordova-sites/dist/client";
 
 const view = require( "./../../html/sites/forgotPasswordSite.html");
 import {UserManager} from "../UserManager";

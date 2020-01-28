@@ -1,4 +1,4 @@
-import {App, Form, MenuSite, NavbarFragment, Toast} from "cordova-sites/dist/cordova-sites";
+import {App, Form, MenuSite, NavbarFragment, Toast} from "cordova-sites/dist/client";
 
 const view = require("./../../html/sites/registrationSite.html");
 import {UserSite} from "../Context/UserSite";

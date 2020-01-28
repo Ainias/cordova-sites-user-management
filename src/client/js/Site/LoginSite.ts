@@ -1,5 +1,5 @@
 import {UserSite} from "../Context/UserSite";
-import {App, Form, Helper, MenuSite, NavbarFragment, Toast} from "cordova-sites/dist/cordova-sites";
+import {App, Form, Helper, MenuSite, NavbarFragment, Toast} from "cordova-sites/dist/client";
 
 const view = require( "./../../html/sites/loginSite.html");
 import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";

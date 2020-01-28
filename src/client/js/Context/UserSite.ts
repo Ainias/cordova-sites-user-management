@@ -1,5 +1,5 @@
 import {Helper} from "js-helper/dist/shared"
-import {DelegateSite, Toast} from "cordova-sites/dist/cordova-sites";
+import {DelegateSite, Toast} from "cordova-sites/dist/client";
 import {UserManager} from "../UserManager";
 import {LoginSite} from "../Site/LoginSite";
 
