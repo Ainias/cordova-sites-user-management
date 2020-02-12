@@ -1,5 +1,5 @@
 import {AccessEasySyncModel} from "./AccessEasySyncModel";
-import {EasySyncPartialModel} from "cordova-sites-easy-sync/model"
+import {EasySyncPartialModel} from "cordova-sites-easy-sync/dist/shared"
 import {User} from "./User";
 
 export class UserSyncPartialModel extends EasySyncPartialModel {

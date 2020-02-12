@@ -15,9 +15,10 @@ function findNames(dir, excluded) {
         if (stats.isDirectory()) {
             let nameObject = findNames(dir + file + '/', excluded);
             names = Object.assign(names, nameObject);
-        } else if ((file.endsWith(".js") || file.endsWith(".ts")) && !excluded.includes(dir + file)) {
+        } else if ((file.endsWith(".ts") ) && !excluded.includes(dir + file)) {
             names[file.substring(0, file.length - 3)] = dir + file.substring(0, file.length - 3);
-        } else if ((file.endsWith(".mjs")) && !excluded.includes(dir + file)) {
+        }
+        else if ((file.endsWith(".mjs") ) && !excluded.includes(dir + file)) {
             names[file.substring(0, file.length - 4)] = dir + file.substring(0, file.length - 4);
         }
     });
@@ -47,20 +48,19 @@ async function buildEntryPoints(fileOption, target) {
     fs.writeFileSync(target, imports);
 }
 
-const versions = ["v1"];
+
 buildEntryPoints({
     input: [
-        path.resolve(process.cwd(), "src/server/"+versions[versions.length-1]),
-        // path.resolve(process.cwd(), "src/shared/"),
+        path.resolve(process.cwd(), "src/server/"),
     ],
-}, "./server.ts");
+}, "./src/server.ts");
 buildEntryPoints({
     input: [
-        path.resolve(process.cwd(), "src/client/js/"),
+        path.resolve(process.cwd(), "src/client/"),
     ],
-}, "./client.ts");
+}, "./src/client.ts");
 buildEntryPoints({
     input: [
-        path.resolve(process.cwd(), "src/shared/"+versions[versions.length-1]),
+        path.resolve(process.cwd(), "src/shared/"),
     ],
-}, "./models.ts");
+}, "./src/shared.ts");

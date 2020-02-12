@@ -1,0 +1,63 @@
+export declare class UserManager {
+    static OFFLINE_ACCESSES: any;
+    static _instance: UserManager;
+    static ACCESS_CLASS_PREFIX: string;
+    protected _defaultUserData: {
+        loggedIn: boolean;
+        online: boolean;
+        id: null;
+        accesses: any;
+        email: null;
+        username: null;
+    };
+    protected _userData: {
+        loggedIn: boolean;
+        online: boolean;
+        id: null;
+        accesses: any;
+        email: null;
+        username: null;
+    };
+    protected _lastLoginChangeCallbackId: number;
+    protected _loginChangeCallbacks: {};
+    constructor();
+    addLoginChangeCallback(callback: any, callImmediately?: any): number;
+    hasAccess(access: any): boolean;
+    _checkChangedLogin(before: any): Promise<void>;
+    _callLoginChangeCallbacks(): Promise<void>;
+    getUserData(): {
+        loggedIn: boolean;
+        online: boolean;
+        id: null;
+        accesses: any;
+        email: null;
+        username: null;
+    };
+    getMe(): Promise<any>;
+    login(email: any, password: any, saveLogin?: any): Promise<boolean>;
+    logout(): Promise<boolean>;
+    register(email: any, username: any, password: any): Promise<any>;
+    _doGetMe(): Promise<any>;
+    _doLogin(email: any, password: any, saveLogin: any): Promise<boolean>;
+    _doLogout(): Promise<boolean>;
+    _doRegister(email: any, username: any, password: any): Promise<any>;
+    /**
+     * @returns {UserManager}
+     */
+    static getInstance(): UserManager;
+    static updateHeaders(): Promise<void>;
+    _updateAccessClasses(): void;
+    hasOfflineAccess(access: any): Promise<boolean>;
+    sendForgotPasswordEmail(email: any): Promise<any>;
+    resetPassword(token: any, password: any): Promise<any>;
+    isOnline(): boolean;
+    isLoggedIn(): boolean;
+    static syncParamFor(model: any): {
+        model: any;
+        where: {
+            user: {
+                id: null;
+            };
+        };
+    };
+}

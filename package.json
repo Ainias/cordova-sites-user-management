@@ -4,28 +4,32 @@
   "version": "0.1.0",
   "description": "Ein Usermanagement für Cordova-Sites",
   "scripts": {
-    "build": "node bin/build.js",
+    "build": "node bin/build.js & tsc && cd ./src && find . -regextype sed -regex '.*\\.\\(html\\|png\\|svg\\|json\\)' -type f -exec cp --parents {} ../dist \\;",
     "update packages": "node bin/updateCopies.js"
   },
   "author": "Silas Günther",
   "peerDependencies": {
-    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.4",
-    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.4",
-    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.4",
+    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.4.1",
+    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.6",
+    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.4.1",
+    "cs-event-manager": "git+https://github.com/Ainias/event-manager.git#0.2",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "typeorm": "^0.2.17",
     "nodemailer": "^6.2.1",
-    "js-helper": "git+https://github.com/Ainias/js-helper#0.4"
+    "js-helper": "git+https://github.com/Ainias/js-helper#0.3.1"
   },
   "devDependencies": {
-    "nodemailer": "^6.2.1",
-    "typeorm": "^0.2.17",
+    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.4.1",
+    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.6",
+    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.4.1",
+    "js-helper": "git+https://github.com/Ainias/js-helper#0.3.1",
+    "cs-event-manager": "git+https://github.com/Ainias/event-manager.git#0.2",
+    "@types/node": "^12.12.14",
+    "typeorm": "^0.2.22",
+    "typescript": "^3.7.2",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
-    "js-helper": "git+https://github.com/Ainias/js-helper#0.4",
-    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.4",
-    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.4",
-    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.4"
+    "nodemailer": "^6.2.1"
   }
 }

@@ -1,4 +1,4 @@
-import {EasySyncClientDb} from "cordova-sites-easy-sync/client";
+import {EasySyncClientDb} from "cordova-sites-easy-sync/dist/client";
 import {NativeStoragePromise} from "cordova-sites/dist/client";
 import {UserManager} from "./UserManager";
 import {Role} from "../../shared/v1/model/Role";

@@ -1,0 +1,37 @@
+{
+  "login": "Login",
+  "logout": "Logout",
+  "email": "E-Mail",
+  "password": "Password",
+
+  "email or password is wrong": "The e-mail or password is incorrect!",
+  "stay logged in": "Stay logged in",
+  "goodbye": "Goodbye",
+  "welcome back": "Welcome back",
+  "registration successful": "Registration successful",
+
+  "registration": "Registration",
+  "I have read and accepted the terms and conditions.": "I have read and accepted the terms and conditions.",
+  "retype password": "Retype Password",
+  "the passwords do not match.": "The passwords do not match.",
+  "username": "Username",
+
+  "email is already in use.": "This e-mail is already in use.",
+  "username is already in use.": "This Username is already taken.",
+  "wrong email or password": "Wrong E-Mail or Password!",
+
+  "wrong rights": "Wrong Rights!",
+
+  "passwort vergessen?": "password forgotten?",
+  "password forgotten": "Password Forgotten",
+  "request new password": "Request New Password",
+
+  "email is not in our database": "The given E-Mailaddress is not registered!",
+  "forgot-password-mail sent": "We sent you an E-Mail with instructions",
+
+  "password resetted": "The password was successfully changed.",
+  "token is not valid": "The given link is no longer valid.",
+  "reset password": "Reset Password",
+  "repeat password": "Repeat Password",
+  "token not valid": "The link is not valid any more"
+}

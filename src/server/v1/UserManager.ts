@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 import {User} from "../../shared/v1/model/User";
 import {Role} from "../../shared/v1/model/Role";
-import {EasySyncServerDb} from "cordova-sites-easy-sync/src/server/EasySyncServerDb";
+import {EasySyncServerDb} from "cordova-sites-easy-sync/dist/server/EasySyncServerDb";
 import {Helper} from "js-helper/dist/shared";
 import {UserAccess} from "./model/UserAccess";
 // import * as crypto from "crypto";

@@ -1,4 +1,4 @@
-import {EasySyncBaseModel} from "cordova-sites-easy-sync/model";
+import {EasySyncBaseModel} from "cordova-sites-easy-sync/dist/shared";
 
 export class AccessEasySyncModel extends EasySyncBaseModel{
     static ACCESS_READ: string|boolean;
