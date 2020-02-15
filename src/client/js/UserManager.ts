@@ -10,6 +10,7 @@ export class UserManager {
     protected _userData: { loggedIn: boolean; online: boolean; id: null; accesses: any; email: null; username: null };
     protected _lastLoginChangeCallbackId: number;
     protected _loginChangeCallbacks: {};
+    private _getMePromise: any;
 
     constructor() {
         this._defaultUserData = {
@@ -24,6 +25,7 @@ export class UserManager {
 
         this._lastLoginChangeCallbackId = -1;
         this._loginChangeCallbacks = {};
+        this._getMePromise = null;
     }
 
     addLoginChangeCallback(callback, callImmediately?) {
@@ -58,10 +60,20 @@ export class UserManager {
     }
 
     async getMe() {
-        let before = this._userData;
-        let res = await this._doGetMe();
-        await this._checkChangedLogin(before);
-        return res;
+        this._getMePromise = new Promise(async r =>{
+            let before = this._userData;
+            let res = await this._doGetMe();
+            await this._checkChangedLogin(before);
+            r(res);
+        });
+        return this._getMePromise;
+    }
+
+    async waitForGetMe(){
+        if (this._getMePromise === null){
+            this.getMe();
+        }
+        await this._getMePromise;
     }
 
     async login(email, password, saveLogin?) {
@@ -210,7 +222,6 @@ export class UserManager {
 
     async resetPassword(token, password) {
         let data = await DataManager.send("user/forgotPW/2", {token: token, password: password});
-        console.log("pw-reset", data);
         return data.success;
     }
 

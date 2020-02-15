@@ -24,6 +24,7 @@ class UserSite extends client_1.DelegateSite {
             onConstruct: { get: () => super.onConstruct }
         });
         return __awaiter(this, void 0, void 0, function* () {
+            yield UserManager_1.UserManager.getInstance().waitForGetMe();
             if (yield this._checkRights()) {
                 let res = yield _super.onConstruct.call(this, constructParameters);
                 UserManager_1.UserManager.getInstance().addLoginChangeCallback(() => __awaiter(this, void 0, void 0, function* () {

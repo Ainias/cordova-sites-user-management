@@ -26,6 +26,7 @@ class LoginSite extends client_1.MenuSite {
             onViewLoaded: { get: () => super.onViewLoaded }
         });
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("userSite");
             let res = _super.onViewLoaded.call(this);
             let form = new client_1.Form(this.findBy("#login-form"), (data) => __awaiter(this, void 0, void 0, function* () {
                 // await this.showLoadingSymbol();

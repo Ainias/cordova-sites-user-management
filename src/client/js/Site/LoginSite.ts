@@ -8,16 +8,19 @@ import {UserMenuAction} from "../MenuAction/UserMenuAction";
 import {ForgotPasswordSite} from "./ForgotPasswordSite";
 
 export class LoginSite extends MenuSite {
+
     static ACCESS: string;
     static LOGOUT_ACCESS: string;
     static ADD_LOGIN_ACTION: boolean;
     static ADD_LOGOUT_ACTION: boolean;
+
     constructor(siteManager) {
         super(siteManager, view);
         this.addDelegate(new UserSite(this, LoginSite.ACCESS));
     }
 
     async onViewLoaded() {
+        console.log("userSite");
         let res = super.onViewLoaded();
         let form = new Form(this.findBy("#login-form"), async data => {
             // await this.showLoadingSymbol();

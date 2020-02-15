@@ -23,6 +23,7 @@ class UserManager {
         this._userData = this._defaultUserData;
         this._lastLoginChangeCallbackId = -1;
         this._loginChangeCallbacks = {};
+        this._getMePromise = null;
     }
     addLoginChangeCallback(callback, callImmediately) {
         this._lastLoginChangeCallbackId++;
@@ -54,10 +55,21 @@ class UserManager {
     }
     getMe() {
         return __awaiter(this, void 0, void 0, function* () {
-            let before = this._userData;
-            let res = yield this._doGetMe();
-            yield this._checkChangedLogin(before);
-            return res;
+            this._getMePromise = new Promise((r) => __awaiter(this, void 0, void 0, function* () {
+                let before = this._userData;
+                let res = yield this._doGetMe();
+                yield this._checkChangedLogin(before);
+                r(res);
+            }));
+            return this._getMePromise;
+        });
+    }
+    waitForGetMe() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this._getMePromise === null) {
+                this.getMe();
+            }
+            yield this._getMePromise;
         });
     }
     login(email, password, saveLogin) {
@@ -211,7 +223,6 @@ class UserManager {
     resetPassword(token, password) {
         return __awaiter(this, void 0, void 0, function* () {
             let data = yield client_1.DataManager.send("user/forgotPW/2", { token: token, password: password });
-            console.log("pw-reset", data);
             return data.success;
         });
     }

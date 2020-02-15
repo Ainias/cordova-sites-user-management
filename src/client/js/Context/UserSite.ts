@@ -14,6 +14,7 @@ export class UserSite extends DelegateSite {
     }
 
     async onConstruct(constructParameters) {
+        await UserManager.getInstance().waitForGetMe();
         if (await this._checkRights()) {
             let res = await super.onConstruct(constructParameters);
             UserManager.getInstance().addLoginChangeCallback(async () => {

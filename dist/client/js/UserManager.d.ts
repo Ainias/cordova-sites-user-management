@@ -20,6 +20,7 @@ export declare class UserManager {
     };
     protected _lastLoginChangeCallbackId: number;
     protected _loginChangeCallbacks: {};
+    private _getMePromise;
     constructor();
     addLoginChangeCallback(callback: any, callImmediately?: any): number;
     hasAccess(access: any): boolean;
@@ -34,6 +35,7 @@ export declare class UserManager {
         username: null;
     };
     getMe(): Promise<any>;
+    waitForGetMe(): Promise<void>;
     login(email: any, password: any, saveLogin?: any): Promise<boolean>;
     logout(): Promise<boolean>;
     register(email: any, username: any, password: any): Promise<any>;
