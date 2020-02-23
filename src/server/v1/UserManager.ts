@@ -174,6 +174,9 @@ export class UserManager {
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASSWORD,
+            },
+            tls: {
+                ciphers:'SSLv3'
             }
         });
 
