@@ -1,5 +1,6 @@
 import {UserManager} from "../UserManager";
 import {User} from "../../../shared/v1/model/User";
+import {Role} from "../../../shared/v1/model/Role";
 
 export class UserController {
     static async login(req, res) {
@@ -84,8 +85,7 @@ export class UserController {
             let info = await UserManager.sendPasswordResetEmail(user, req.lang);
             let success = (info.accepted.indexOf(email) !== -1);
             await res.json({success: success});
-        }
-        else {
+        } else {
             await res.json({success: false, message: "User not found!"})
         }
     }
@@ -94,13 +94,85 @@ export class UserController {
         let token = req.body.token;
         let password = req.body.password;
 
-        if (await UserManager.resetPasswordWithToken(token, password)){
-            console.log("success");
+        if (await UserManager.resetPasswordWithToken(token, password)) {
             await res.json({success: true});
-        }
-        else {
-            console.log("no success");
+        } else {
             await res.json({success: false});
         }
+    }
+
+    static async getUserDataForRoles(req, res) {
+        let user;
+        if (req.query.id) {
+            user = await User.findById(req.query.id, User.getRelations());
+        }
+
+        if (!user) {
+            return res.json({success: false, message: "user not found"});
+        }
+
+        let userRoles = [];
+        user.roles.forEach(role => userRoles.push(role.id));
+
+        let roles = await Role.find();
+        let rolesJson = [];
+        roles.forEach(role => rolesJson.push({id: role.id, name: role.name}));
+
+        let accesses = await UserManager.loadCachedAccessesForUser(user);
+        let accessNames = [];
+        accesses.forEach(access => accessNames.push(access.name));
+
+        return res.json({
+            success: true,
+            "userData": {
+                "id": user.id,
+                "username": user.username,
+                "accesses": accessNames,
+                "roleIds": userRoles,
+            },
+            "roles": rolesJson,
+        });
+    }
+
+    static async updateRoleForUser(req, res){
+        let user;
+        if (req.body.id) {
+            user = await User.findById(req.body.id, User.getRelations());
+        }
+
+        if (req.body.addRole !== true && req.body.addRole !== false){
+            return res.json({success: false, message: "missing parameter addRole"});
+        }
+
+        if (!user) {
+            return res.json({success: false, message: "user not found"});
+        }
+
+        let role;
+        if (req.body.roleId){
+            role = await Role.findById(req.body.roleId);
+        }
+        if (!role){
+            return res.json({success: false, message: "role not found"});
+        }
+
+        if (req.body.addRole){
+            user.roles.push(role);
+        }
+        else {
+            user.roles = user.roles.filter(userRole => userRole.id !== role.id);
+        }
+
+        await user.save();
+        await UserManager.updateCachedAccessesForUser(user);
+
+        let accesses = await UserManager.loadCachedAccessesForUser(user);
+        let accessNames = [];
+        accesses.forEach(access => accessNames.push(access.name));
+
+        return res.json({
+            "success": true,
+            "accesses": accessNames
+        })
     }
 }

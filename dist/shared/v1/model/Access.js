@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const shared_1 = require("cordova-sites-easy-sync/dist/shared");
 const cordova_sites_database_1 = require("cordova-sites-database/dist/cordova-sites-database");
-// import {Role} from "./Role";
 class Access extends shared_1.EasySyncBaseModel {
     constructor() {
         super();
@@ -17,5 +16,6 @@ class Access extends shared_1.EasySyncBaseModel {
     }
 }
 exports.Access = Access;
+Access.CAN_BE_SYNCED = false;
 cordova_sites_database_1.BaseDatabase.addModel(Access);
 //# sourceMappingURL=Access.js.map

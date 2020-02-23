@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserManager_1 = require("../UserManager");
 const User_1 = require("../../../shared/v1/model/User");
+const Role_1 = require("../../../shared/v1/model/Role");
 class UserController {
     static login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -110,13 +111,76 @@ class UserController {
             let token = req.body.token;
             let password = req.body.password;
             if (yield UserManager_1.UserManager.resetPasswordWithToken(token, password)) {
-                console.log("success");
                 yield res.json({ success: true });
             }
             else {
-                console.log("no success");
                 yield res.json({ success: false });
             }
+        });
+    }
+    static getUserDataForRoles(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let user;
+            if (req.query.id) {
+                user = yield User_1.User.findById(req.query.id, User_1.User.getRelations());
+            }
+            if (!user) {
+                return res.json({ success: false, message: "user not found" });
+            }
+            let userRoles = [];
+            user.roles.forEach(role => userRoles.push(role.id));
+            let roles = yield Role_1.Role.find();
+            let rolesJson = [];
+            roles.forEach(role => rolesJson.push({ id: role.id, name: role.name }));
+            let accesses = yield UserManager_1.UserManager.loadCachedAccessesForUser(user);
+            let accessNames = [];
+            accesses.forEach(access => accessNames.push(access.name));
+            return res.json({
+                success: true,
+                "userData": {
+                    "id": user.id,
+                    "username": user.username,
+                    "accesses": accessNames,
+                    "roleIds": userRoles,
+                },
+                "roles": rolesJson,
+            });
+        });
+    }
+    static updateRoleForUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let user;
+            if (req.body.id) {
+                user = yield User_1.User.findById(req.body.id, User_1.User.getRelations());
+            }
+            if (req.body.addRole !== true && req.body.addRole !== false) {
+                return res.json({ success: false, message: "missing parameter addRole" });
+            }
+            if (!user) {
+                return res.json({ success: false, message: "user not found" });
+            }
+            let role;
+            if (req.body.roleId) {
+                role = yield Role_1.Role.findById(req.body.roleId);
+            }
+            if (!role) {
+                return res.json({ success: false, message: "role not found" });
+            }
+            if (req.body.addRole) {
+                user.roles.push(role);
+            }
+            else {
+                user.roles = user.roles.filter(userRole => userRole.id !== role.id);
+            }
+            yield user.save();
+            yield UserManager_1.UserManager.updateCachedAccessesForUser(user);
+            let accesses = yield UserManager_1.UserManager.loadCachedAccessesForUser(user);
+            let accessNames = [];
+            accesses.forEach(access => accessNames.push(access.name));
+            return res.json({
+                "success": true,
+                "accesses": accessNames
+            });
         });
     }
 }

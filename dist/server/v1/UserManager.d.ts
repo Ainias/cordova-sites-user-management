@@ -12,6 +12,7 @@ export declare class UserManager {
     static EXPIRES_IN: any;
     static setUserFromToken(req: any, res: any, next: any): void;
     static needToken(req: any, res: any, next: any): void;
+    static checkAccess(accessName: any): (req: any, res: any, next: any) => void;
     static _hashPassword(user: any, password: any): any;
     static login(email: any, password: any): Promise<{
         user: any;

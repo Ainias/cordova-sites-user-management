@@ -7,6 +7,7 @@ __export(require("./client/js/Context/UserSite"));
 __export(require("./client/js/MenuAction/StartUserSiteMenuAction"));
 __export(require("./client/js/MenuAction/UserMenuAction"));
 __export(require("./client/js/OfflineUserManager"));
+__export(require("./client/js/Site/ChangeUserSite"));
 __export(require("./client/js/Site/ForgotPasswordSite"));
 __export(require("./client/js/Site/LoginSite"));
 __export(require("./client/js/Site/RegistrationSite"));

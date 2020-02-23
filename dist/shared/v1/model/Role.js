@@ -64,5 +64,6 @@ class Role extends shared_1.EasySyncBaseModel {
     }
 }
 exports.Role = Role;
+Role.CAN_BE_SYNCED = false;
 cordova_sites_database_1.BaseDatabase.addModel(Role);
 //# sourceMappingURL=Role.js.map

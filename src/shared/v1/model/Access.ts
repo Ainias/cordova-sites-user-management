@@ -1,6 +1,5 @@
 import {EasySyncBaseModel} from "cordova-sites-easy-sync/dist/shared";
 import {BaseDatabase} from "cordova-sites-database/dist/cordova-sites-database";
-// import {Role} from "./Role";
 
 export class Access extends EasySyncBaseModel{
 
@@ -20,4 +19,5 @@ export class Access extends EasySyncBaseModel{
         return columns;
     }
 }
+Access.CAN_BE_SYNCED = false;
 BaseDatabase.addModel(Access);

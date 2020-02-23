@@ -74,6 +74,23 @@ class UserManager {
             }
         });
     }
+    static checkAccess(accessName) {
+        return (req, res, next) => {
+            UserManager.needToken(req, res, () => {
+                UserManager.hasAccess(req.user, accessName).then(hasAccess => {
+                    if (!hasAccess) {
+                        return res.json({
+                            success: false,
+                            message: "Wrong Access!"
+                        });
+                    }
+                    else {
+                        next();
+                    }
+                });
+            });
+        };
+    }
     static _hashPassword(user, password) {
         if (!user.salt) {
             user.salt = UserManager._generateSalt();
@@ -237,13 +254,31 @@ class UserManager {
     }
     static updateCachedAccessesForUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let userAccesses = yield UserManager.findAccessesForUser(user);
-            yield shared_1.Helper.asyncForEach(userAccesses, ((access) => __awaiter(this, void 0, void 0, function* () {
-                let userAccess = new UserAccess_1.UserAccess();
-                userAccess.user = user;
-                userAccess.access = access;
-                yield userAccess.save();
-            })), false);
+            let oldUserAccesses = yield UserAccess_1.UserAccess.find({ user: { id: user.id } }, null, null, null, UserAccess_1.UserAccess.getRelations());
+            oldUserAccesses = shared_1.Helper.arrayToObject(oldUserAccesses, oldAccess => oldAccess.access.id);
+            let oldAccessesIds = Object.keys(oldUserAccesses);
+            let oldAccessesStillActive = [];
+            let newUserAccesses = [];
+            let accesses = yield UserManager.findAccessesForUser(user);
+            accesses.forEach(access => {
+                if (oldAccessesIds.indexOf("" + access.id) === -1) {
+                    let userAccess = new UserAccess_1.UserAccess();
+                    userAccess.user = user;
+                    userAccess.access = access;
+                    newUserAccesses.push(userAccess);
+                }
+                else {
+                    oldAccessesStillActive.push(access.id);
+                }
+            });
+            let deleteIds = oldAccessesIds.filter(id => oldAccessesStillActive.indexOf(parseInt(id)) === -1);
+            let deleteUserAccesses = [];
+            deleteIds.forEach(id => {
+                if (oldUserAccesses[id]) {
+                    deleteUserAccesses.push(oldUserAccesses[id]);
+                }
+            });
+            yield Promise.all([UserAccess_1.UserAccess.saveMany(newUserAccesses), UserAccess_1.UserAccess.deleteMany(deleteUserAccesses)]);
         });
     }
     static loadCachedAccessesForUser(user, reload) {

@@ -71,4 +71,5 @@ export class Role extends EasySyncBaseModel{
         return relations;
     }
 }
+Role.CAN_BE_SYNCED = false;
 BaseDatabase.addModel(Role);

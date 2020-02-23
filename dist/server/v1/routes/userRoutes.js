@@ -16,6 +16,8 @@ const errorHandler = (fn) => {
 userRoutes.post("/login", errorHandler(UserController_1.UserController.login));
 userRoutes.post("/register", errorHandler(UserController_1.UserController.register));
 userRoutes.get("", errorHandler(UserManager_1.UserManager.setUserFromToken), errorHandler(UserController_1.UserController.getMe));
+userRoutes.get("/userRoles", errorHandler(UserManager_1.UserManager.checkAccess("admin")), errorHandler(UserController_1.UserController.getUserDataForRoles));
+userRoutes.post("/changeUserRole", errorHandler(UserManager_1.UserManager.checkAccess("admin")), errorHandler(UserController_1.UserController.updateRoleForUser));
 userRoutes.post("/forgotPW", errorHandler(UserController_1.UserController.sendPasswordResetMail));
 userRoutes.post("/forgotPW/2", errorHandler(UserController_1.UserController.resetPassword));
 //# sourceMappingURL=userRoutes.js.map

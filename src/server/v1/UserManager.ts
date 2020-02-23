@@ -82,6 +82,23 @@ export class UserManager {
         });
     }
 
+    static checkAccess(accessName) {
+        return (req, res, next) => {
+            UserManager.needToken(req, res, () => {
+                UserManager.hasAccess(req.user, accessName).then(hasAccess => {
+                    if (!hasAccess) {
+                        return res.json({
+                            success: false,
+                            message: "Wrong Access!"
+                        });
+                    } else {
+                        next();
+                    }
+                })
+            });
+        }
+    }
+
     static _hashPassword(user, password) {
         if (!user.salt) {
             user.salt = UserManager._generateSalt();
@@ -143,7 +160,7 @@ export class UserManager {
         return user;
     }
 
-    static async sendPasswordResetEmail(user, language) : Promise<any>{
+    static async sendPasswordResetEmail(user, language): Promise<any> {
         let token = jwt.sign({userId: user.id, version: user.version, action: "pw-reset"},
             process.env.JWT_SECRET, {
                 expiresIn: UserManager.EXPIRES_IN
@@ -259,13 +276,36 @@ export class UserManager {
     }
 
     static async updateCachedAccessesForUser(user) {
-        let userAccesses = await UserManager.findAccessesForUser(user);
-        await Helper.asyncForEach(userAccesses, (async access => {
-            let userAccess = new UserAccess();
-            userAccess.user = user;
-            userAccess.access = access;
-            await userAccess.save();
-        }), false);
+        let oldUserAccesses = await UserAccess.find({user: {id: user.id}}, null, null, null, UserAccess.getRelations());
+        oldUserAccesses = Helper.arrayToObject(oldUserAccesses, oldAccess => oldAccess.access.id);
+
+        let oldAccessesIds = Object.keys(oldUserAccesses);
+        let oldAccessesStillActive = [];
+
+        let newUserAccesses = [];
+        let accesses = await UserManager.findAccessesForUser(user);
+
+        accesses.forEach(access => {
+            if (oldAccessesIds.indexOf(""+access.id) === -1) {
+                let userAccess = new UserAccess();
+                userAccess.user = user;
+                userAccess.access = access;
+                newUserAccesses.push(userAccess);
+            } else {
+                oldAccessesStillActive.push(access.id)
+            }
+        });
+
+        let deleteIds = oldAccessesIds.filter(id => oldAccessesStillActive.indexOf(parseInt(id)) === -1);
+
+        let deleteUserAccesses = [];
+        deleteIds.forEach(id => {
+            if (oldUserAccesses[id]) {
+                deleteUserAccesses.push(oldUserAccesses[id]);
+            }
+        });
+
+        await Promise.all([UserAccess.saveMany(newUserAccesses), UserAccess.deleteMany(deleteUserAccesses)]);
     }
 
     static async loadCachedAccessesForUser(user, reload?) {
