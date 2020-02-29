@@ -1,4 +1,5 @@
 export * from './client/js/Context/UserSite';
+export * from './client/js/Dialog/SelectUserDialog';
 export * from './client/js/MenuAction/StartUserSiteMenuAction';
 export * from './client/js/MenuAction/UserMenuAction';
 export * from './client/js/OfflineUserManager';

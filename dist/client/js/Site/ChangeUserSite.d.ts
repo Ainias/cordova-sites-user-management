@@ -3,6 +3,7 @@ export declare class ChangeUserSite extends MenuSite {
     static ACCESS: string;
     static LOAD_USER_INFOS_URL: string;
     static CHANGE_USER_ROLE_URL: string;
+    static ADD_CHANGE_USER_ACTION: boolean;
     private _hasRoleContainer;
     private _availableRoleContainer;
     private _hasRoleTemplate;

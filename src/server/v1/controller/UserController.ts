@@ -1,6 +1,8 @@
 import {UserManager} from "../UserManager";
 import {User} from "../../../shared/v1/model/User";
 import {Role} from "../../../shared/v1/model/Role";
+import {Helper} from "js-helper/dist/shared/Helper";
+import {Like} from "typeorm";
 
 export class UserController {
     static async login(req, res) {
@@ -174,5 +176,15 @@ export class UserController {
             "success": true,
             "accesses": accessNames
         })
+    }
+
+    static async listUsers(req, res){
+        let userSearchName = Helper.nonNull(req.query.username, "");
+
+        let users = await User.find({username: Like("%"+userSearchName+"%")});
+        res.json({
+            success: true,
+            data: users
+        });
     }
 }

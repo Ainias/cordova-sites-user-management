@@ -4,6 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./client/js/Context/UserSite"));
+__export(require("./client/js/Dialog/SelectUserDialog"));
 __export(require("./client/js/MenuAction/StartUserSiteMenuAction"));
 __export(require("./client/js/MenuAction/UserMenuAction"));
 __export(require("./client/js/OfflineUserManager"));

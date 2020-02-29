@@ -6,4 +6,5 @@ export declare class UserController {
     static resetPassword(req: any, res: any): Promise<void>;
     static getUserDataForRoles(req: any, res: any): Promise<any>;
     static updateRoleForUser(req: any, res: any): Promise<any>;
+    static listUsers(req: any, res: any): Promise<void>;
 }

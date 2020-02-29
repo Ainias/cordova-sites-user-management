@@ -2,16 +2,22 @@ import {MenuSite} from "cordova-sites/dist/client/js/Context/MenuSite";
 import {UserSite} from "../Context/UserSite";
 import {Helper} from "js-helper/dist/shared/Helper";
 import {DataManager} from "cordova-sites/dist/client/js/DataManager";
-import {Toast} from "cordova-sites/dist/client";
+import {App, NavbarFragment, Toast} from "cordova-sites/dist/client";
 import {ViewHelper} from "js-helper/dist/client/ViewHelper";
+import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";
+import {UserMenuAction} from "../MenuAction/UserMenuAction";
+import {UserManager} from "../UserManager";
+import {LoginSite} from "./LoginSite";
+import {SelectUserDialog} from "../Dialog/SelectUserDialog";
 
-const view = require( "./../../html/sites/changeUserSite.html");
+const view = require("./../../html/sites/changeUserSite.html");
 
-export class ChangeUserSite extends MenuSite{
+export class ChangeUserSite extends MenuSite {
 
     static ACCESS: string = "admin";
     static LOAD_USER_INFOS_URL = "/user/userRoles";
     static CHANGE_USER_ROLE_URL = "/user/changeUserRole";
+    static ADD_CHANGE_USER_ACTION: boolean = true;
     private _hasRoleContainer: any;
     private _availableRoleContainer: any;
     private _hasRoleTemplate: any;
@@ -28,11 +34,10 @@ export class ChangeUserSite extends MenuSite{
         let res = super.onConstruct(constructParameters);
 
         let data;
-        if (Helper.isSet(constructParameters, "id"))
-        {
-            data = await DataManager.load(ChangeUserSite.LOAD_USER_INFOS_URL+DataManager.buildQuery({id: constructParameters["id"]}));
+        if (Helper.isSet(constructParameters, "id")) {
+            data = await DataManager.load(ChangeUserSite.LOAD_USER_INFOS_URL + DataManager.buildQuery({id: constructParameters["id"]}));
         }
-        if (!data || data.success !== true){
+        if (!data || data.success !== true) {
             new Toast(data.message).show();
             this.finish();
         }
@@ -65,15 +70,14 @@ export class ChangeUserSite extends MenuSite{
         return res;
     }
 
-    updateRoles(){
+    updateRoles() {
         let userRoles = [];
         let availableRoles = [];
 
         this._roles.forEach(role => {
-            if (this._userData.roleIds.indexOf(role.id) !== -1){
+            if (this._userData.roleIds.indexOf(role.id) !== -1) {
                 userRoles.push(role);
-            }
-            else {
+            } else {
                 availableRoles.push(role);
             }
         });
@@ -84,10 +88,15 @@ export class ChangeUserSite extends MenuSite{
             elem.querySelector(".role-name").innerText = role.name;
             elem.querySelector(".remove-role").addEventListener("click", async () => {
                 this.showLoadingSymbol();
-                let res = await DataManager.send(ChangeUserSite.CHANGE_USER_ROLE_URL, {id: this._userData.id, roleId: role.id, addRole: false});
-                this._userData.roleIds.splice(this._userData.roleIds.indexOf(role.id), 1);
-                this.updateRoles();
-                console.log(res);
+                let res = await DataManager.send(ChangeUserSite.CHANGE_USER_ROLE_URL, {
+                    id: this._userData.id,
+                    roleId: role.id,
+                    addRole: false
+                });
+                if (res.success) {
+                    this._userData.roleIds.splice(this._userData.roleIds.indexOf(role.id), 1);
+                    this.updateRoles();
+                }
                 this.removeLoadingSymbol();
             });
 
@@ -100,10 +109,15 @@ export class ChangeUserSite extends MenuSite{
             elem.querySelector(".role-name").innerText = role.name;
             elem.querySelector(".add-role").addEventListener("click", async () => {
                 this.showLoadingSymbol();
-                let res = await DataManager.send(ChangeUserSite.CHANGE_USER_ROLE_URL, {id: this._userData.id, roleId: role.id, addRole: true});
-                this._userData.roleIds.push(role.id);
-                this.updateRoles();
-                console.log(res);
+                let res = await DataManager.send(ChangeUserSite.CHANGE_USER_ROLE_URL, {
+                    id: this._userData.id,
+                    roleId: role.id,
+                    addRole: true
+                });
+                if (res.success) {
+                    this._userData.roleIds.push(role.id);
+                    this.updateRoles();
+                }
                 this.removeLoadingSymbol();
             });
 
@@ -111,3 +125,13 @@ export class ChangeUserSite extends MenuSite{
         })
     }
 }
+
+App.addInitialization(app => {
+    if (ChangeUserSite.ADD_CHANGE_USER_ACTION) {
+        NavbarFragment.defaultActions.push(new UserMenuAction("change user", ChangeUserSite.ACCESS, async () => {
+            let user = await new SelectUserDialog().show();
+            await app.startSite(ChangeUserSite, {"id": user["id"]});
+        }));
+    }
+    app.addDeepLink("login", LoginSite);
+});

@@ -20,4 +20,5 @@ userRoutes.get("/userRoles", errorHandler(UserManager_1.UserManager.checkAccess(
 userRoutes.post("/changeUserRole", errorHandler(UserManager_1.UserManager.checkAccess("admin")), errorHandler(UserController_1.UserController.updateRoleForUser));
 userRoutes.post("/forgotPW", errorHandler(UserController_1.UserController.sendPasswordResetMail));
 userRoutes.post("/forgotPW/2", errorHandler(UserController_1.UserController.resetPassword));
+userRoutes.get("/listUsers", errorHandler(UserManager_1.UserManager.checkAccess("admin")), errorHandler(UserController_1.UserController.listUsers));
 //# sourceMappingURL=userRoutes.js.map

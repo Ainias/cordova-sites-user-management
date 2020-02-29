@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const UserManager_1 = require("../UserManager");
 const User_1 = require("../../../shared/v1/model/User");
 const Role_1 = require("../../../shared/v1/model/Role");
+const Helper_1 = require("js-helper/dist/shared/Helper");
+const typeorm_1 = require("typeorm");
 class UserController {
     static login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -180,6 +182,16 @@ class UserController {
             return res.json({
                 "success": true,
                 "accesses": accessNames
+            });
+        });
+    }
+    static listUsers(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let userSearchName = Helper_1.Helper.nonNull(req.query.username, "");
+            let users = yield User_1.User.find({ username: typeorm_1.Like("%" + userSearchName + "%") });
+            res.json({
+                success: true,
+                data: users
             });
         });
     }
