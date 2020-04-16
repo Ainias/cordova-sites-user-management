@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("cordova-sites/dist/client");
+const User_1 = require("../../shared/v1/model/User");
 class UserManager {
     constructor() {
         this._defaultUserData = {
@@ -237,6 +238,14 @@ class UserManager {
             model: model,
             where: {
                 user: { id: this.getInstance().getUserData().id }
+            }
+        };
+    }
+    static userSyncParam() {
+        return {
+            model: User_1.User,
+            where: {
+                id: this.getInstance().getUserData().id
             }
         };
     }

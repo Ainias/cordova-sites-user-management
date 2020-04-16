@@ -1,3 +1,4 @@
+import { User } from "../../shared/v1/model/User";
 export declare class UserManager {
     static OFFLINE_ACCESSES: any;
     static _instance: UserManager;
@@ -60,6 +61,12 @@ export declare class UserManager {
             user: {
                 id: null;
             };
+        };
+    };
+    static userSyncParam(): {
+        model: typeof User;
+        where: {
+            id: null;
         };
     };
 }

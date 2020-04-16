@@ -2,7 +2,7 @@ import {EasySyncBaseModel} from "cordova-sites-easy-sync/dist/shared";
 import {BaseDatabase} from "cordova-sites-database/dist/cordova-sites-database";
 import {Role} from "./Role";
 
-export class User extends EasySyncBaseModel{
+export class User extends EasySyncBaseModel {
 
     username: string;
     email: string;
@@ -23,14 +23,14 @@ export class User extends EasySyncBaseModel{
         this.salt = null;
     }
 
-    toJSON(){
+    toJSON() {
         return {
-            "id": this.id,
-            "username": this.username
+            id: this.id,
+            username: this.username,
         };
     }
 
-    static getColumnDefinitions(){
+    static getColumnDefinitions() {
         let columns = super.getColumnDefinitions();
         columns["username"] = {type: BaseDatabase.TYPES.STRING, unique: true};
         columns["email"] = {type: BaseDatabase.TYPES.STRING, unique: true};
@@ -41,7 +41,7 @@ export class User extends EasySyncBaseModel{
         return columns;
     }
 
-    static getRelationDefinitions(){
+    static getRelationDefinitions() {
         let relations = super.getRelationDefinitions();
         relations["roles"] = {
             target: Role.getSchemaName(),
@@ -53,5 +53,26 @@ export class User extends EasySyncBaseModel{
         };
         return relations;
     }
+
+    static prepareSync(entities){
+        let jsonEntities = [];
+        entities.forEach(entity => {
+            let jsonEntity: any = {};
+            jsonEntity.id = entity.id;
+            jsonEntity.createdAt = new Date();
+            jsonEntity.updatedAt = new Date();
+            jsonEntity.username = "";
+            jsonEntity.email = "";
+            jsonEntity.password = "";
+            jsonEntity.salt = "";
+            jsonEntity.activated = 1;
+            jsonEntity.blocked = 1;
+            jsonEntity.version = 1;
+            jsonEntity.deleted = 0;
+            jsonEntities.push(jsonEntity);
+        });
+        return jsonEntities;
+    }
 }
+
 BaseDatabase.addModel(User);

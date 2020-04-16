@@ -16,8 +16,8 @@ class User extends shared_1.EasySyncBaseModel {
     }
     toJSON() {
         return {
-            "id": this.id,
-            "username": this.username
+            id: this.id,
+            username: this.username,
         };
     }
     static getColumnDefinitions() {
@@ -41,6 +41,25 @@ class User extends shared_1.EasySyncBaseModel {
             cascade: false
         };
         return relations;
+    }
+    static prepareSync(entities) {
+        let jsonEntities = [];
+        entities.forEach(entity => {
+            let jsonEntity = {};
+            jsonEntity.id = entity.id;
+            jsonEntity.createdAt = new Date();
+            jsonEntity.updatedAt = new Date();
+            jsonEntity.username = "";
+            jsonEntity.email = "";
+            jsonEntity.password = "";
+            jsonEntity.salt = "";
+            jsonEntity.activated = 1;
+            jsonEntity.blocked = 1;
+            jsonEntity.version = 1;
+            jsonEntity.deleted = 0;
+            jsonEntities.push(jsonEntity);
+        });
+        return jsonEntities;
     }
 }
 exports.User = User;

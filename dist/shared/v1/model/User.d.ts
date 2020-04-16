@@ -9,8 +9,8 @@ export declare class User extends EasySyncBaseModel {
     salt: string;
     constructor();
     toJSON(): {
-        "id": number;
-        "username": string;
+        id: number;
+        username: string;
     };
     static getColumnDefinitions(): {
         id: {
@@ -20,4 +20,5 @@ export declare class User extends EasySyncBaseModel {
         };
     };
     static getRelationDefinitions(): {};
+    static prepareSync(entities: any): any[];
 }

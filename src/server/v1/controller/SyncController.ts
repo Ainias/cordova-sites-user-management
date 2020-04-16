@@ -14,6 +14,7 @@ export class SyncController extends EasySyncController {
         } else if (model.CAN_BE_SYNCED === false) {
             throw new Error("tried to sync unsyncable model " + model.getSchemaName());
         }
+
         return this._doSyncModel(model, lastSynced, offset, where);
     }
 

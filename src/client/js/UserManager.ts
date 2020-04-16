@@ -1,4 +1,5 @@
 import {DataManager, Helper, NativeStoragePromise, Toast} from "cordova-sites/dist/client";
+import {User} from "../../shared/v1/model/User";
 
 export class UserManager {
 
@@ -238,6 +239,15 @@ export class UserManager {
             model: model,
             where: {
                 user: {id: this.getInstance().getUserData().id}
+            }
+        }
+    }
+
+    static userSyncParam() {
+        return {
+            model: User,
+            where: {
+                id: this.getInstance().getUserData().id
             }
         }
     }
