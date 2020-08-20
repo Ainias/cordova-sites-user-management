@@ -38,7 +38,8 @@ export class SelectUserDialog extends Dialog {
     }
 
     async _loadUsers(username?) {
-        let res = await DataManager.load("/listUsers" + DataManager.buildQuery({username: Helper.nonNull(username, "")}));
+        debugger;
+        let res = await DataManager.load("user/listUsers" + DataManager.buildQuery({username: Helper.nonNull(username, "")}));
         if (res["success"]) {
             ViewHelper.removeAllChildren(this._userContainer);
             let users = res["data"];

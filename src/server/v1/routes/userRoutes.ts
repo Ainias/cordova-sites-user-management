@@ -21,5 +21,6 @@ userRoutes.post("/changeUserRole", errorHandler(UserManager.checkAccess("admin")
 userRoutes.post("/forgotPW", errorHandler(UserController.sendPasswordResetMail));
 userRoutes.post("/forgotPW/2", errorHandler(UserController.resetPassword));
 userRoutes.get("/listUsers", errorHandler(UserManager.checkAccess("admin")), errorHandler(UserController.listUsers));
+// userRoutes.get("/listUsers", errorHandler(UserController.listUsers));
 
 export {userRoutes};

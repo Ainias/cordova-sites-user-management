@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SelectUserDialog = void 0;
 const Dialog_1 = require("cordova-sites/dist/client/js/Dialog/Dialog");
 const ViewInflater_1 = require("cordova-sites/dist/client/js/ViewInflater");
 const DataManager_1 = require("cordova-sites/dist/client/js/DataManager");
@@ -37,7 +38,8 @@ class SelectUserDialog extends Dialog_1.Dialog {
     }
     _loadUsers(username) {
         return __awaiter(this, void 0, void 0, function* () {
-            let res = yield DataManager_1.DataManager.load("/listUsers" + DataManager_1.DataManager.buildQuery({ username: Helper_1.Helper.nonNull(username, "") }));
+            debugger;
+            let res = yield DataManager_1.DataManager.load("user/listUsers" + DataManager_1.DataManager.buildQuery({ username: Helper_1.Helper.nonNull(username, "") }));
             if (res["success"]) {
                 ViewHelper_1.ViewHelper.removeAllChildren(this._userContainer);
                 let users = res["data"];

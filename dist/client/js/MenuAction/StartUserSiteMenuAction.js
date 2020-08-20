@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.StartUserSiteMenuAction = void 0;
 const UserMenuAction_1 = require("./UserMenuAction");
 const client_1 = require("cordova-sites/dist/client");
 class StartUserSiteMenuAction extends UserMenuAction_1.UserMenuAction {

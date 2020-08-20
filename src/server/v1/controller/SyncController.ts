@@ -5,7 +5,7 @@ import {EasySyncServerDb} from "cordova-sites-easy-sync/dist/server/EasySyncServ
 
 export class SyncController extends EasySyncController {
 
-    static async _syncModel(model, lastSynced, offset, where, req) {
+    static async _syncModel(model, lastSynced, offset, where, req, order?) {
         if (model.prototype instanceof AccessEasySyncModel) {
             let user = req.user;
             if (model.ACCESS_READ === false || (model.ACCESS_READ !== true && (!user || !(await UserManager.hasAccess(user, model.ACCESS_READ))))) {
@@ -15,7 +15,7 @@ export class SyncController extends EasySyncController {
             throw new Error("tried to sync unsyncable model " + model.getSchemaName());
         }
 
-        return this._doSyncModel(model, lastSynced, offset, where);
+        return this._doSyncModel(model, lastSynced, offset, where, order);
     }
 
     static async modifyModel(req, res) {

@@ -5,8 +5,9 @@ const fs = require('fs');
 const packageName = require("../package.json").name;
 
 let pathsToProjects = [
-    "/home/silas/Projekte/Web/project-echo",
-    "/home/silas/Projekte/Web/stories",
+    // "/home/silas/Projekte/web/project-echo",
+    // "/home/silas/Projekte/web/stories",
+    "/home/silas/Projekte/web/smd-mail",
     "/home/silas/Projekte/i9/mbb",
 
     // "/var/www/i9/mbb"

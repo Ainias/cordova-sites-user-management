@@ -179,6 +179,8 @@ export class UserController {
     }
 
     static async listUsers(req, res){
+        debugger;
+
         let userSearchName = Helper.nonNull(req.query.username, "");
 
         let users = await User.find({username: Like("%"+userSearchName+"%")});

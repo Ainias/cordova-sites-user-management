@@ -4,9 +4,7 @@ import {Helper} from "js-helper/dist/shared/Helper";
 import {DataManager} from "cordova-sites/dist/client/js/DataManager";
 import {App, NavbarFragment, Toast} from "cordova-sites/dist/client";
 import {ViewHelper} from "js-helper/dist/client/ViewHelper";
-import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";
 import {UserMenuAction} from "../MenuAction/UserMenuAction";
-import {UserManager} from "../UserManager";
 import {LoginSite} from "./LoginSite";
 import {SelectUserDialog} from "../Dialog/SelectUserDialog";
 
@@ -15,6 +13,7 @@ const view = require("./../../html/sites/changeUserSite.html");
 export class ChangeUserSite extends MenuSite {
 
     static ACCESS: string = "admin";
+
     static LOAD_USER_INFOS_URL = "/user/userRoles";
     static CHANGE_USER_ROLE_URL = "/user/changeUserRole";
     static ADD_CHANGE_USER_ACTION: boolean = true;

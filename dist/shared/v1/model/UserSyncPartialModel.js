@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserSyncPartialModel = void 0;
 const shared_1 = require("cordova-sites-easy-sync/dist/shared");
 const User_1 = require("./User");
 class UserSyncPartialModel extends shared_1.EasySyncPartialModel {

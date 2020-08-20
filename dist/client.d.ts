@@ -6,6 +6,7 @@ export * from './client/js/OfflineUserManager';
 export * from './client/js/Site/ChangeUserSite';
 export * from './client/js/Site/ForgotPasswordSite';
 export * from './client/js/Site/LoginSite';
+export * from './client/js/Site/NotAllowedSite';
 export * from './client/js/Site/RegistrationSite';
 export * from './client/js/UserManager';
 export * from './client/js/translationInit';

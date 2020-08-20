@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ChangeUserSite = void 0;
 const MenuSite_1 = require("cordova-sites/dist/client/js/Context/MenuSite");
 const UserSite_1 = require("../Context/UserSite");
 const Helper_1 = require("js-helper/dist/shared/Helper");

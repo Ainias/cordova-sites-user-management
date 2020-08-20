@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserManager = void 0;
 const client_1 = require("cordova-sites/dist/client");
 const User_1 = require("../../shared/v1/model/User");
 class UserManager {

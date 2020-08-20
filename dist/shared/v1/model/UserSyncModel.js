@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserSyncModel = void 0;
 const AccessEasySyncModel_1 = require("./AccessEasySyncModel");
 const User_1 = require("./User");
 class UserSyncModel extends AccessEasySyncModel_1.AccessEasySyncModel {

@@ -20,7 +20,6 @@ export class LoginSite extends MenuSite {
     }
 
     async onViewLoaded() {
-        console.log("userSite");
         let res = super.onViewLoaded();
         let form = new Form(this.findBy("#login-form"), async data => {
             // await this.showLoadingSymbol();

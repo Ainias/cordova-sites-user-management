@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.syncRoutes = void 0;
 const express = require("express");
 const SyncController_1 = require("../controller/SyncController");
 const UserManager_1 = require("../UserManager");

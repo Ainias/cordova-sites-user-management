@@ -9,27 +9,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteUserManagement1000000000000 = void 0;
-class DeleteUserManagement1000000000000 {
-    _isServer() {
-        return (typeof document !== "object");
+exports.NotAllowedSite = void 0;
+const MenuSite_1 = require("cordova-sites/dist/client/js/Context/MenuSite");
+const view = require("./../../html/sites/notAllowedSite.html");
+class NotAllowedSite extends MenuSite_1.MenuSite {
+    constructor(siteManager) {
+        super(siteManager, view);
     }
-    up(queryRunner) {
+    onConstruct(constructParameters) {
+        return super.onConstruct(constructParameters);
+    }
+    onCreateMenu(navbar) {
+        return super.onCreateMenu(navbar);
+    }
+    onPause() {
+        const _super = Object.create(null, {
+            onPause: { get: () => super.onPause }
+        });
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.dropTable("roleAccess", true);
-            yield queryRunner.dropTable("roleChildren", true);
-            yield queryRunner.dropTable("userRole", true);
-            if (this._isServer()) {
-                yield queryRunner.dropTable("user_access", true);
-            }
-            yield queryRunner.dropTable("access", true);
-            yield queryRunner.dropTable("role", true);
-            yield queryRunner.dropTable("user", true);
+            let res = _super.onPause.call(this);
+            yield this.finish();
+            return res;
         });
     }
-    down(queryRunner) {
-        return undefined;
-    }
 }
-exports.DeleteUserManagement1000000000000 = DeleteUserManagement1000000000000;
-//# sourceMappingURL=DeleteUserManagement.js.map
+exports.NotAllowedSite = NotAllowedSite;
+//# sourceMappingURL=NotAllowedSite.js.map

@@ -9,10 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserSite = void 0;
 const shared_1 = require("js-helper/dist/shared");
 const client_1 = require("cordova-sites/dist/client");
 const UserManager_1 = require("../UserManager");
 const LoginSite_1 = require("../Site/LoginSite");
+const NotAllowedSite_1 = require("../Site/NotAllowedSite");
 class UserSite extends client_1.DelegateSite {
     constructor(site, access, allowOfflineAccess) {
         super(site);
@@ -37,17 +39,22 @@ class UserSite extends client_1.DelegateSite {
     _checkRights() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(UserManager_1.UserManager.getInstance().hasAccess(this._access) || (this._allowOfflineAccess && (yield UserManager_1.UserManager.getInstance().hasOfflineAccess(this._access))))) {
-                if (this.isShowing() && !this.isDestroying()) {
-                    console.log("show wrong-rights toast");
-                    new client_1.Toast("wrong rights").show();
-                }
+                // if (this.isShowing() && !this.isDestroying()) {
+                //     await this.startSite(NotAllowedSite);
+                // }
                 if (UserManager_1.UserManager.getInstance().isOnline() && !UserManager_1.UserManager.getInstance().isLoggedIn() && !(this._site instanceof LoginSite_1.LoginSite)) {
                     this.startSite(LoginSite_1.LoginSite, {
                         deepLink: this._site._siteManager.getDeepLinkFor(this._site),
                         args: this._site.getParameters()
                     });
                 }
-                yield this.finish();
+                else if (this._site._siteManager.getCurrentSite() === this._site && !this.isDestroying()) {
+                    new client_1.Toast("wrong rights").show();
+                    yield this.startSite(NotAllowedSite_1.NotAllowedSite);
+                }
+                if (!this.isDestroying()) {
+                    yield this.finish();
+                }
                 return false;
             }
             return true;

@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LoginSite = void 0;
 const UserSite_1 = require("../Context/UserSite");
 const client_1 = require("cordova-sites/dist/client");
 const view = require("./../../html/sites/loginSite.html");
@@ -26,7 +27,6 @@ class LoginSite extends client_1.MenuSite {
             onViewLoaded: { get: () => super.onViewLoaded }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("userSite");
             let res = _super.onViewLoaded.call(this);
             let form = new client_1.Form(this.findBy("#login-form"), (data) => __awaiter(this, void 0, void 0, function* () {
                 // await this.showLoadingSymbol();

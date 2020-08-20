@@ -9,12 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SyncController = void 0;
 const EasySyncController_1 = require("cordova-sites-easy-sync/dist/server/EasySyncController");
 const AccessEasySyncModel_1 = require("../../../shared/v1/model/AccessEasySyncModel");
 const UserManager_1 = require("../UserManager");
 const EasySyncServerDb_1 = require("cordova-sites-easy-sync/dist/server/EasySyncServerDb");
 class SyncController extends EasySyncController_1.EasySyncController {
-    static _syncModel(model, lastSynced, offset, where, req) {
+    static _syncModel(model, lastSynced, offset, where, req, order) {
         return __awaiter(this, void 0, void 0, function* () {
             if (model.prototype instanceof AccessEasySyncModel_1.AccessEasySyncModel) {
                 let user = req.user;
@@ -25,7 +26,7 @@ class SyncController extends EasySyncController_1.EasySyncController {
             else if (model.CAN_BE_SYNCED === false) {
                 throw new Error("tried to sync unsyncable model " + model.getSchemaName());
             }
-            return this._doSyncModel(model, lastSynced, offset, where);
+            return this._doSyncModel(model, lastSynced, offset, where, order);
         });
     }
     static modifyModel(req, res) {

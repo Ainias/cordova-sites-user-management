@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Role = void 0;
 const shared_1 = require("cordova-sites-easy-sync/dist/shared");
 const cordova_sites_database_1 = require("cordova-sites-database/dist/cordova-sites-database");
 const Access_1 = require("./Access");

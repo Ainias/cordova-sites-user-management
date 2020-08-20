@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ForgotPasswordSite = void 0;
 const UserSite_1 = require("../Context/UserSite");
 const client_1 = require("cordova-sites/dist/client");
 const view = require("./../../html/sites/forgotPasswordSite.html");

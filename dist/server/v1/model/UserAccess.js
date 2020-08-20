@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserAccess = void 0;
 const cordova_sites_database_1 = require("cordova-sites-database/dist/cordova-sites-database");
 const Access_1 = require("../../../shared/v1/model/Access");
 const User_1 = require("../../../shared/v1/model/User");

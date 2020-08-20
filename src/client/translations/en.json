@@ -33,5 +33,9 @@
   "token is not valid": "The given link is no longer valid.",
   "reset password": "Reset Password",
   "repeat password": "Repeat Password",
-  "token not valid": "The link is not valid any more"
+  "token not valid": "The link is not valid any more",
+
+  "Not allowed": "Not allowed",
+  "You don't have the rights to do this!": "You don't have the rights to do this!",
+  "If you are not logged in, please log in and try again.": "If you are not logged in, please log in and try again."
 }

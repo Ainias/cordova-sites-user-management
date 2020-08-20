@@ -26,5 +26,8 @@
   "token is not valid": "Der Link ist nicht mehr gültig.",
   "reset password": "Passwort zurücksetzen",
   "repeat password": "Passwort wiederholen",
-  "token not valid": "Der Link ist nicht mehr gültig"
+  "token not valid": "Der Link ist nicht mehr gültig",
+  "Not allowed": "Nicht erlaubt",
+  "You don't have the rights to do this!": "Du hast nicht die Berechtigung, um das zu tun!",
+  "If you are not logged in, please log in and try again.": "Wenn du noch nicht eingeloggt bist, logge dich ein und versuche es erneut."
 }

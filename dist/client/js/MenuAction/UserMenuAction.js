@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserMenuAction = void 0;
 const client_1 = require("cordova-sites/dist/client");
 const UserManager_1 = require("../UserManager");
 const Helper_1 = require("js-helper/dist/shared/Helper");

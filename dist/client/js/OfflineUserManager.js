@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.OfflineUserManager = void 0;
 const client_1 = require("cordova-sites-easy-sync/dist/client");
 const client_2 = require("cordova-sites/dist/client");
 const UserManager_1 = require("./UserManager");
