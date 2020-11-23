@@ -5,6 +5,8 @@ export class UserSyncModel extends AccessEasySyncModel {
 
     static NEED_USER: boolean;
 
+    user: User;
+
     static getRelationDefinitions() {
         let relations = super.getRelationDefinitions();
         relations["user"] = {
