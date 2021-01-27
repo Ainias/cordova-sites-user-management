@@ -1,7 +1,7 @@
 import {UserSite} from "../Context/UserSite";
 import {App, Form, Helper, MenuSite, NavbarFragment, Toast} from "cordova-sites/dist/client";
 
-const view = require( "./../../html/sites/loginSite.html");
+const defaultView = require("./../../html/sites/loginSite.html");
 import {StartUserSiteMenuAction} from "../MenuAction/StartUserSiteMenuAction";
 import {UserManager} from "../UserManager";
 import {UserMenuAction} from "../MenuAction/UserMenuAction";
@@ -13,9 +13,12 @@ export class LoginSite extends MenuSite {
     static LOGOUT_ACCESS: string;
     static ADD_LOGIN_ACTION: boolean;
     static ADD_LOGOUT_ACTION: boolean;
+    static ADD_DEEP_LINK: boolean;
 
-    constructor(siteManager) {
-        super(siteManager, view);
+    protected forgotPasswordSiteClass = ForgotPasswordSite;
+
+    constructor(siteManager, view?) {
+        super(siteManager, Helper.nonNull(view, defaultView));
         this.addDelegate(new UserSite(this, LoginSite.ACCESS));
     }
 
@@ -27,20 +30,20 @@ export class LoginSite extends MenuSite {
                 new Toast("welcome back").show();
                 await this.finish();
             } else {
-                form.setErrors({
-                    "email": "email or password is wrong"
-                });
+                //super-nervig
+
+                // form.setErrors({
+                //     "email": "email or password is wrong"
+                // });
                 // await this.removeLoadingSymbol();
             }
         });
 
         let listener = () => form.clearErrors();
-        this.findBy("#login-form [name=email]").addEventListener("keydown", listener);
-        this.findBy("#login-form [name=password]").addEventListener("keydown", listener);
+        this.findBy("#login-form [name=email]")?.addEventListener("keydown", listener);
+        this.findBy("#login-form [name=password]")?.addEventListener("keydown", listener);
 
-        this.findBy("#forgot-pw").addEventListener("click", async () => {
-            this.startSite(ForgotPasswordSite);
-        });
+        this.findBy("#forgot-pw")?.addEventListener("click", async () => this.startSite(this.forgotPasswordSiteClass));
 
         return res;
     }
@@ -50,6 +53,7 @@ LoginSite.ACCESS = "loggedOut";
 LoginSite.LOGOUT_ACCESS = "loggedIn";
 LoginSite.ADD_LOGIN_ACTION = true;
 LoginSite.ADD_LOGOUT_ACTION = true;
+LoginSite.ADD_DEEP_LINK = true;
 
 App.addInitialization(app => {
     if (LoginSite.ADD_LOGIN_ACTION) {
@@ -60,5 +64,7 @@ App.addInitialization(app => {
             await UserManager.getInstance().logout();
         }));
     }
-    app.addDeepLink("login", LoginSite);
+    if (LoginSite.ADD_DEEP_LINK) {
+        app.addDeepLink("login", LoginSite);
+    }
 });

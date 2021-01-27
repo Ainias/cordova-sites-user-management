@@ -11,14 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegistrationSite = void 0;
 const client_1 = require("cordova-sites/dist/client");
-const view = require("./../../html/sites/registrationSite.html");
+const defaultView = require("./../../html/sites/registrationSite.html");
 const UserSite_1 = require("../Context/UserSite");
 const StartUserSiteMenuAction_1 = require("../MenuAction/StartUserSiteMenuAction");
 const UserManager_1 = require("../UserManager");
 const User_1 = require("../../../shared/v1/model/User");
+const shared_1 = require("js-helper/dist/shared");
 class RegistrationSite extends client_1.MenuSite {
-    constructor(siteManager) {
-        super(siteManager, view);
+    constructor(siteManager, view) {
+        super(siteManager, shared_1.Helper.nonNull(view, defaultView));
         this.addDelegate(new UserSite_1.UserSite(this, RegistrationSite.ACCESS));
     }
     onViewLoaded() {
@@ -55,10 +56,13 @@ class RegistrationSite extends client_1.MenuSite {
 exports.RegistrationSite = RegistrationSite;
 RegistrationSite.ACCESS = "loggedOut";
 RegistrationSite.ADD_REGISTRATION_ACTION = true;
+RegistrationSite.ADD_DEEP_LINK = true;
 client_1.App.addInitialization(app => {
     if (RegistrationSite.ADD_REGISTRATION_ACTION) {
         client_1.NavbarFragment.defaultActions.push(new StartUserSiteMenuAction_1.StartUserSiteMenuAction("registration", RegistrationSite.ACCESS, RegistrationSite));
     }
-    app.addDeepLink("registration", RegistrationSite);
+    if (RegistrationSite.ADD_DEEP_LINK) {
+        app.addDeepLink("registration", RegistrationSite);
+    }
 });
 //# sourceMappingURL=RegistrationSite.js.map

@@ -12,20 +12,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoginSite = void 0;
 const UserSite_1 = require("../Context/UserSite");
 const client_1 = require("cordova-sites/dist/client");
-const view = require("./../../html/sites/loginSite.html");
+const defaultView = require("./../../html/sites/loginSite.html");
 const StartUserSiteMenuAction_1 = require("../MenuAction/StartUserSiteMenuAction");
 const UserManager_1 = require("../UserManager");
 const UserMenuAction_1 = require("../MenuAction/UserMenuAction");
 const ForgotPasswordSite_1 = require("./ForgotPasswordSite");
 class LoginSite extends client_1.MenuSite {
-    constructor(siteManager) {
-        super(siteManager, view);
+    constructor(siteManager, view) {
+        super(siteManager, client_1.Helper.nonNull(view, defaultView));
+        this.forgotPasswordSiteClass = ForgotPasswordSite_1.ForgotPasswordSite;
         this.addDelegate(new UserSite_1.UserSite(this, LoginSite.ACCESS));
     }
     onViewLoaded() {
         const _super = Object.create(null, {
             onViewLoaded: { get: () => super.onViewLoaded }
         });
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let res = _super.onViewLoaded.call(this);
             let form = new client_1.Form(this.findBy("#login-form"), (data) => __awaiter(this, void 0, void 0, function* () {
@@ -35,18 +37,17 @@ class LoginSite extends client_1.MenuSite {
                     yield this.finish();
                 }
                 else {
-                    form.setErrors({
-                        "email": "email or password is wrong"
-                    });
+                    //super-nervig
+                    // form.setErrors({
+                    //     "email": "email or password is wrong"
+                    // });
                     // await this.removeLoadingSymbol();
                 }
             }));
             let listener = () => form.clearErrors();
-            this.findBy("#login-form [name=email]").addEventListener("keydown", listener);
-            this.findBy("#login-form [name=password]").addEventListener("keydown", listener);
-            this.findBy("#forgot-pw").addEventListener("click", () => __awaiter(this, void 0, void 0, function* () {
-                this.startSite(ForgotPasswordSite_1.ForgotPasswordSite);
-            }));
+            (_a = this.findBy("#login-form [name=email]")) === null || _a === void 0 ? void 0 : _a.addEventListener("keydown", listener);
+            (_b = this.findBy("#login-form [name=password]")) === null || _b === void 0 ? void 0 : _b.addEventListener("keydown", listener);
+            (_c = this.findBy("#forgot-pw")) === null || _c === void 0 ? void 0 : _c.addEventListener("click", () => __awaiter(this, void 0, void 0, function* () { return this.startSite(this.forgotPasswordSiteClass); }));
             return res;
         });
     }
@@ -56,6 +57,7 @@ LoginSite.ACCESS = "loggedOut";
 LoginSite.LOGOUT_ACCESS = "loggedIn";
 LoginSite.ADD_LOGIN_ACTION = true;
 LoginSite.ADD_LOGOUT_ACTION = true;
+LoginSite.ADD_DEEP_LINK = true;
 client_1.App.addInitialization(app => {
     if (LoginSite.ADD_LOGIN_ACTION) {
         client_1.NavbarFragment.defaultActions.push(new StartUserSiteMenuAction_1.StartUserSiteMenuAction("login", LoginSite.ACCESS, LoginSite));
@@ -65,6 +67,8 @@ client_1.App.addInitialization(app => {
             yield UserManager_1.UserManager.getInstance().logout();
         })));
     }
-    app.addDeepLink("login", LoginSite);
+    if (LoginSite.ADD_DEEP_LINK) {
+        app.addDeepLink("login", LoginSite);
+    }
 });
 //# sourceMappingURL=LoginSite.js.map
