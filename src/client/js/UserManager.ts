@@ -44,7 +44,7 @@ export class UserManager {
         return (this._userData.accesses.indexOf(access) !== -1);
     }
 
-    async _checkChangedLogin(before) {
+    private async _checkChangedLogin(before) {
         if (this._userData.loggedIn !== before.loggedIn || (this._userData.loggedIn === true && this._userData.id !== before.id)) {
             await this._callLoginChangeCallbacks();
         }
@@ -80,6 +80,7 @@ export class UserManager {
     async login(email, password, saveLogin?) {
         let before = this._userData;
         let res = await this._doLogin(email, password, saveLogin);
+
         //do it after the result is returned
         setTimeout(() => {
             this._checkChangedLogin(before);
@@ -102,7 +103,11 @@ export class UserManager {
     async register(email, username, password) {
         let before = this._userData;
         let res = await this._doRegister(email, username, password);
-        await this._checkChangedLogin(before);
+
+        //With timeout so there is time to end registration site
+        setTimeout(() => {
+            this._checkChangedLogin(before);
+        }, 1);
         return res;
     }
 

@@ -53,7 +53,6 @@ class SyncController extends EasySyncController_1.EasySyncController {
             let model = EasySyncServerDb_1.EasySyncServerDb.getModel(modelName);
             if (model.prototype instanceof AccessEasySyncModel_1.AccessEasySyncModel) {
                 let user = req.user;
-                console.log(user);
                 if (model.ACCESS_MODIFY === false || (model.ACCESS_MODIFY !== true && (!user || !(yield UserManager_1.UserManager.hasAccess(user, model.ACCESS_MODIFY))))) {
                     throw new Error("user " + (user ? user.id : "null") + " tried to delete model " + model.getSchemaName() + " (" + modelIds + ") without permission");
                 }

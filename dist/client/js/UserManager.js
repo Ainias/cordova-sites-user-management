@@ -100,7 +100,10 @@ class UserManager {
         return __awaiter(this, void 0, void 0, function* () {
             let before = this._userData;
             let res = yield this._doRegister(email, username, password);
-            yield this._checkChangedLogin(before);
+            //With timeout so there is time to end registration site
+            setTimeout(() => {
+                this._checkChangedLogin(before);
+            }, 1);
             return res;
         });
     }

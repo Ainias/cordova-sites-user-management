@@ -39,9 +39,6 @@ class UserSite extends client_1.DelegateSite {
     _checkRights() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(UserManager_1.UserManager.getInstance().hasAccess(this._access) || (this._allowOfflineAccess && (yield UserManager_1.UserManager.getInstance().hasOfflineAccess(this._access))))) {
-                // if (this.isShowing() && !this.isDestroying()) {
-                //     await this.startSite(NotAllowedSite);
-                // }
                 if (UserManager_1.UserManager.getInstance().isOnline() && !UserManager_1.UserManager.getInstance().isLoggedIn() && !(this._site instanceof LoginSite_1.LoginSite)) {
                     this.startSite(LoginSite_1.LoginSite, {
                         deepLink: this._site._siteManager.getDeepLinkFor(this._site),

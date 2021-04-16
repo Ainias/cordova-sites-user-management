@@ -27,9 +27,6 @@ export class UserSite extends DelegateSite {
 
     async _checkRights() {
         if (!(UserManager.getInstance().hasAccess(this._access) || (this._allowOfflineAccess && await UserManager.getInstance().hasOfflineAccess(this._access)))) {
-            // if (this.isShowing() && !this.isDestroying()) {
-            //     await this.startSite(NotAllowedSite);
-            // }
             if (UserManager.getInstance().isOnline() && !UserManager.getInstance().isLoggedIn() && !(this._site instanceof LoginSite)) {
                 this.startSite(LoginSite, {
                     deepLink: this._site._siteManager.getDeepLinkFor(this._site),

@@ -25,7 +25,7 @@ export declare class UserManager {
     constructor();
     addLoginChangeCallback(callback: any, callImmediately?: any): number;
     hasAccess(access: any): boolean;
-    _checkChangedLogin(before: any): Promise<void>;
+    private _checkChangedLogin;
     _callLoginChangeCallbacks(): Promise<void>;
     getUserData(): {
         loggedIn: boolean;

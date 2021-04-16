@@ -31,7 +31,7 @@ class RegistrationSite extends client_1.MenuSite {
             let form = new client_1.Form(this.findBy("#registration-form"), (data) => __awaiter(this, void 0, void 0, function* () {
                 let result = yield UserManager_1.UserManager.getInstance().register(data["email"], data["username"], data["password"]);
                 if ((result instanceof User_1.User) || result === true) {
-                    yield new client_1.Toast("registration successful").show();
+                    new client_1.Toast("registration successful").show();
                     yield this.finish();
                 }
                 else {

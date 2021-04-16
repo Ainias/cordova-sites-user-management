@@ -23,7 +23,7 @@ export class RegistrationSite extends MenuSite {
         let form = new Form(this.findBy("#registration-form"), async data => {
             let result = await UserManager.getInstance().register(data["email"], data["username"], data["password"]);
             if ((result instanceof User) || result === true) {
-                await new Toast("registration successful").show();
+                new Toast("registration successful").show();
                 await this.finish();
             } else {
                 await form.setErrors(result);
