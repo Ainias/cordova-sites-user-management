@@ -6,31 +6,29 @@
   "description": "Ein Usermanagement für Cordova-Sites",
   "scripts": {
     "build": "node bin/build.js & tsc && cd ./src && find . -regextype sed -regex '.*\\.\\(html\\|png\\|svg\\|json\\)' -type f -exec cp --parents {} ../dist \\;",
-    "update packages": "node bin/updateCopies.js"
+    "update packages": "node bin/updateCopies.js",
+    "force-audit-fix": "npx npm-force-resolutions"
   },
   "author": "Silas Günther",
   "peerDependencies": {
-    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.7.10",
-    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.4.8",
-    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.7.4",
-    "cs-event-manager": "git+https://github.com/Ainias/event-manager.git#0.2",
+    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.7.15",
+    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.5.1",
+    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.7.7",
+    "cs-event-manager": "git+https://github.com/Ainias/event-manager.git#0.2.1",
     "express": "^4.17.1",
-    "js-helper": "git+https://github.com/Ainias/js-helper#0.6.3",
+    "js-helper": "git+https://github.com/Ainias/js-helper#0.7.5",
     "jsonwebtoken": "^8.5.1",
-    "nodemailer": "^6.5.0",
-    "typeorm": "^0.2.32"
+    "nodemailer": "^6.6.1",
+    "typeorm": "^0.2.34"
   },
   "devDependencies": {
-    "@types/node": "^14.14.41",
-    "cordova-sites": "git+https://github.com/Ainias/cordova-sites.git#0.7.10",
-    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database.git#0.4.8",
-    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync.git#0.7.4",
-    "cs-event-manager": "git+https://github.com/Ainias/event-manager.git#0.2",
-    "express": "^4.17.1",
-    "js-helper": "git+https://github.com/Ainias/js-helper.git#0.6.3",
-    "jsonwebtoken": "^8.5.1",
-    "nodemailer": "^6.5.0",
-    "typeorm": "^0.2.32",
-    "typescript": "^4.2.4"
+    "@types/node": "^15.12.2",
+    "typescript": "^4.3.2",
+    "npm-force-resolutions": "^0.0.10"
+  },
+  "resolutions": {
+    "glob-parent": "5.1.2",
+    "immer": "8.0.1",
+    "browserslist": "4.16.6"
   }
 }
