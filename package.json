@@ -16,15 +16,16 @@
     "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.7.7",
     "cs-event-manager": "git+https://github.com/Ainias/event-manager.git#0.2.1",
     "express": "^4.17.1",
-    "js-helper": "git+https://github.com/Ainias/js-helper#0.7.5",
+    "js-helper": "git+https://github.com/Ainias/js-helper#0.7.6",
     "jsonwebtoken": "^8.5.1",
     "nodemailer": "^6.6.1",
     "typeorm": "^0.2.34"
   },
   "devDependencies": {
     "@types/node": "^15.12.2",
-    "typescript": "^4.3.2",
-    "npm-force-resolutions": "^0.0.10"
+    "npm-force-resolutions": "^0.0.10",
+    "prettier": "^2.3.2",
+    "typescript": "^4.3.2"
   },
   "resolutions": {
     "glob-parent": "5.1.2",

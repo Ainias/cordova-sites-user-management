@@ -1,4 +1,4 @@
-import { User } from "../../shared/v1/model/User";
+import { User } from '../../shared/v1/model/User';
 export declare class UserManager {
     static SALT_LENGTH: number;
     static RENEW_AFTER: number;
@@ -10,6 +10,7 @@ export declare class UserManager {
     static REGISTRATION_IS_ACTIVATED: boolean;
     static REGISTRATION_DEFAULT_ROLE_IDS: any;
     static EXPIRES_IN: any;
+    static getUserFromToken(token: any): Promise<[User, any]>;
     static setUserFromToken(req: any, res: any, next: any): void;
     static needToken(req: any, res: any, next: any): void;
     static checkAccess(accessName: any): (req: any, res: any, next: any) => void;

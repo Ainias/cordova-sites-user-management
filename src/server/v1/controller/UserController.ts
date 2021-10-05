@@ -116,7 +116,7 @@ export class UserController {
         let userRoles = [];
         user.roles.forEach(role => userRoles.push(role.id));
 
-        let roles = await Role.find();
+        let roles = <Role[]>await Role.find();
         let rolesJson = [];
         roles.forEach(role => rolesJson.push({id: role.id, name: role.name}));
 

@@ -8,6 +8,7 @@ let pathsToProjects = [
     "/home/silas/Projekte/web/project-echo",
     // "/home/silas/Projekte/web/stories",
     "/home/silas/Projekte/web/smd-mail",
+    "/home/silas/Projekte/web/hoffnungsfest",
     "/home/silas/Projekte/i9/mbb",
 
     // "/var/www/i9/mbb"

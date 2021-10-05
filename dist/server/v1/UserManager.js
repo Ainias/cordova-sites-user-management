@@ -20,12 +20,40 @@ const UserAccess_1 = require("./model/UserAccess");
 const nodemailer = require("nodemailer");
 const _typeorm = require("typeorm");
 const server_1 = require("cordova-sites/dist/server");
-const crypto = require("crypto");
+const crypto = require('crypto');
 let typeorm = _typeorm;
-// if (typeorm.default) {
-//     typeorm = typeorm.default;
-// }
 class UserManager {
+    static getUserFromToken(token) {
+        const result = new shared_1.PromiseWithHandlers();
+        if (token) {
+            jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+                try {
+                    if (!err) {
+                        let where = {
+                            id: decoded.userId,
+                            password: decoded.passwordHash,
+                            blocked: false,
+                        };
+                        if (UserManager.LOGIN_NEED_TO_BE_ACTIVATED) {
+                            where['activated'] = true;
+                        }
+                        let user = yield User_1.User.findOne(where);
+                        result.resolve([user, decoded]);
+                    }
+                    else {
+                        result.reject(err);
+                    }
+                }
+                catch (e) {
+                    result.reject(e);
+                }
+            }));
+        }
+        else {
+            result.resolve([null, null]);
+        }
+        return result;
+    }
     static setUserFromToken(req, res, next) {
         let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
         if (token && token.startsWith('Bearer ')) {
@@ -33,30 +61,21 @@ class UserManager {
             token = token.slice(7, token.length);
         }
         if (token) {
-            jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => __awaiter(this, void 0, void 0, function* () {
-                if (!err) {
-                    let where = {
-                        id: decoded.userId,
-                        password: decoded.passwordHash,
-                        blocked: false,
-                    };
-                    if (UserManager.LOGIN_NEED_TO_BE_ACTIVATED) {
-                        where["activated"] = true;
-                    }
-                    let user = yield User_1.User.findOne(where);
-                    if (user) {
-                        req.tokenData = decoded;
-                        req.user = user;
-                    }
-                    else {
-                        console.log("user with id " + decoded.userId + " for token not found");
-                    }
+            UserManager.getUserFromToken(token)
+                .then(([user, decodedToken]) => {
+                if (user) {
+                    req.tokenData = decodedToken;
+                    req.user = user;
                 }
                 else {
-                    console.error(err);
+                    console.log('user with id ' + decodedToken.userId + ' for token not found');
                 }
                 next();
-            }));
+            })
+                .catch((e) => {
+                console.error(e);
+                next();
+            });
         }
         else {
             next();
@@ -67,7 +86,7 @@ class UserManager {
             if (!req.user) {
                 return res.json({
                     success: false,
-                    message: 'User is not valid'
+                    message: 'User is not valid',
                 });
             }
             else {
@@ -78,11 +97,11 @@ class UserManager {
     static checkAccess(accessName) {
         return (req, res, next) => {
             UserManager.needToken(req, res, () => {
-                UserManager.hasAccess(req.user, accessName).then(hasAccess => {
+                UserManager.hasAccess(req.user, accessName).then((hasAccess) => {
                     if (!hasAccess) {
                         return res.json({
                             success: false,
-                            message: "Wrong Access!"
+                            message: 'Wrong Access!',
                         });
                     }
                     else {
@@ -96,9 +115,9 @@ class UserManager {
         if (!user.salt) {
             user.salt = UserManager._generateSalt();
         }
-        let hash = crypto.createHmac("sha512", user.salt + UserManager.PEPPER);
+        let hash = crypto.createHmac('sha512', user.salt + UserManager.PEPPER);
         hash.update(password);
-        return hash.digest("hex");
+        return hash.digest('hex');
     }
     static login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -120,7 +139,7 @@ class UserManager {
     static register(email, username, password) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!UserManager.REGISTRATION_CAN_REGISTER) {
-                throw new Error("Cannot register new user, since user registration is not activated!");
+                throw new Error('Cannot register new user, since user registration is not activated!');
             }
             email = email.toLowerCase();
             if (!UserManager.REGISTRATION_USERNAME_IS_CASE_SENSITIVE) {
@@ -131,10 +150,10 @@ class UserManager {
                 User_1.User.findOne({ username: typeorm.Equal(username) }),
             ]);
             if (otherUsers[0]) {
-                throw new Error("A user with the email-address exists already!");
+                throw new Error('A user with the email-address exists already!');
             }
             if (otherUsers[1]) {
-                throw new Error("A user with the username exists already!");
+                throw new Error('A user with the username exists already!');
             }
             let user = new User_1.User();
             user.username = username;
@@ -151,27 +170,30 @@ class UserManager {
     }
     static sendPasswordResetEmail(user, language) {
         return __awaiter(this, void 0, void 0, function* () {
-            let token = jwt.sign({ userId: user.id, version: user.version, action: "pw-reset" }, process.env.JWT_SECRET, {
-                expiresIn: UserManager.EXPIRES_IN
+            let token = jwt.sign({ userId: user.id, version: user.version, action: 'pw-reset' }, process.env.JWT_SECRET, {
+                expiresIn: UserManager.EXPIRES_IN,
             });
             let transporter = nodemailer.createTransport({
                 host: process.env.EMAIL_HOST,
                 port: process.env.EMAIL_PORT,
-                secure: shared_1.Helper.nonNull(process.env.EMAIL_SECURE, "1") !== "0",
+                secure: shared_1.Helper.nonNull(process.env.EMAIL_SECURE, '1') !== '0',
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASSWORD,
                 },
                 tls: {
-                    ciphers: 'SSLv3'
-                }
+                    ciphers: 'SSLv3',
+                },
             });
             let serverTranslator = new server_1.ServerTranslator(language);
             let mailOptions = {
                 from: process.env.EMAIL_FROM,
                 to: user.email,
-                subject: serverTranslator.translate("email-header-usermanager-password-forgotten"),
-                text: serverTranslator.translate("email-usermanager-password-forgotten", [user.username, process.env.PW_FORGOTTEN_LINK + token])
+                subject: serverTranslator.translate('email-header-usermanager-password-forgotten'),
+                text: serverTranslator.translate('email-usermanager-password-forgotten', [
+                    user.username,
+                    process.env.PW_FORGOTTEN_LINK + token,
+                ]),
             };
             return new Promise((resolve, reject) => {
                 transporter.sendMail(mailOptions, (err, info) => {
@@ -190,7 +212,7 @@ class UserManager {
             return new Promise((resolve, reject) => {
                 jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => __awaiter(this, void 0, void 0, function* () {
                     if (!err) {
-                        if (decoded.action === "pw-reset") {
+                        if (decoded.action === 'pw-reset') {
                             let where = {
                                 id: decoded.userId,
                                 version: decoded.version,
@@ -203,7 +225,7 @@ class UserManager {
                                 resolve(true);
                             }
                             else {
-                                console.log("user with id " + decoded.userId + " for token not found while resetting password");
+                                console.log('user with id ' + decoded.userId + ' for token not found while resetting password');
                                 resolve(false);
                             }
                         }
@@ -221,7 +243,7 @@ class UserManager {
     }
     static _generateToken(user) {
         return jwt.sign({ userId: user.id, passwordHash: user.password }, process.env.JWT_SECRET, {
-            expiresIn: UserManager.EXPIRES_IN
+            expiresIn: UserManager.EXPIRES_IN,
         });
     }
     static findAccessesForUser(user) {
@@ -229,13 +251,13 @@ class UserManager {
             let accesses = [];
             let roles = user.roles;
             let roleIds = [];
-            roles.forEach(role => {
+            roles.forEach((role) => {
                 roleIds.push(role.id);
             });
             //Reload roles with accesses
-            roles = yield Role_1.Role.findByIds(roleIds, ["accesses"]);
+            roles = yield Role_1.Role.findByIds(roleIds, ['accesses']);
             yield shared_1.Helper.asyncForEach(roles, (role) => __awaiter(this, void 0, void 0, function* () {
-                accesses.push(...yield this.findAccessesForRole(role));
+                accesses.push(...(yield this.findAccessesForRole(role)));
             }));
             return accesses;
         });
@@ -244,9 +266,10 @@ class UserManager {
         return __awaiter(this, void 0, void 0, function* () {
             let accesses = role.accesses;
             let repo = yield EasySyncServerDb_1.EasySyncServerDb.getInstance()._getRepository(Role_1.Role.getSchemaName());
-            let parents = yield repo.createQueryBuilder(Role_1.Role.getSchemaName())
-                .leftJoinAndSelect(Role_1.Role.getSchemaName() + '.accesses', "access")
-                .leftJoinAndSelect(Role_1.Role.getSchemaName() + '.children', "child")
+            let parents = yield repo
+                .createQueryBuilder(Role_1.Role.getSchemaName())
+                .leftJoinAndSelect(Role_1.Role.getSchemaName() + '.accesses', 'access')
+                .leftJoinAndSelect(Role_1.Role.getSchemaName() + '.children', 'child')
                 .where('child.id = :id', { id: role.id })
                 .getMany();
             yield shared_1.Helper.asyncForEach(parents, (role) => __awaiter(this, void 0, void 0, function* () {
@@ -258,14 +281,14 @@ class UserManager {
     }
     static updateCachedAccessesForUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let oldUserAccesses = yield UserAccess_1.UserAccess.find({ user: { id: user.id } }, null, null, null, UserAccess_1.UserAccess.getRelations());
-            oldUserAccesses = shared_1.Helper.arrayToObject(oldUserAccesses, oldAccess => oldAccess.access.id);
+            const users = (yield UserAccess_1.UserAccess.find({ user: { id: user.id } }, null, null, null, UserAccess_1.UserAccess.getRelations()));
+            const oldUserAccesses = shared_1.Helper.arrayToObject(users, (oldAccess) => oldAccess.access.id);
             let oldAccessesIds = Object.keys(oldUserAccesses);
             let oldAccessesStillActive = [];
             let newUserAccesses = [];
             let accesses = yield UserManager.findAccessesForUser(user);
-            accesses.forEach(access => {
-                if (oldAccessesIds.indexOf("" + access.id) === -1) {
+            accesses.forEach((access) => {
+                if (oldAccessesIds.indexOf('' + access.id) === -1) {
                     let userAccess = new UserAccess_1.UserAccess();
                     userAccess.user = user;
                     userAccess.access = access;
@@ -275,9 +298,9 @@ class UserManager {
                     oldAccessesStillActive.push(access.id);
                 }
             });
-            let deleteIds = oldAccessesIds.filter(id => oldAccessesStillActive.indexOf(parseInt(id)) === -1);
+            let deleteIds = oldAccessesIds.filter((id) => oldAccessesStillActive.indexOf(parseInt(id)) === -1);
             let deleteUserAccesses = [];
-            deleteIds.forEach(id => {
+            deleteIds.forEach((id) => {
                 if (oldUserAccesses[id]) {
                     deleteUserAccesses.push(oldUserAccesses[id]);
                 }
@@ -291,13 +314,14 @@ class UserManager {
                 return user._cachedAccesses;
             }
             let repo = yield EasySyncServerDb_1.EasySyncServerDb.getInstance()._getRepository(UserAccess_1.UserAccess.getSchemaName());
-            let userAccesses = yield repo.createQueryBuilder(UserAccess_1.UserAccess.getSchemaName())
-                .leftJoinAndSelect(UserAccess_1.UserAccess.getSchemaName() + '.user', "user")
-                .leftJoinAndSelect(UserAccess_1.UserAccess.getSchemaName() + '.access', "access")
+            let userAccesses = yield repo
+                .createQueryBuilder(UserAccess_1.UserAccess.getSchemaName())
+                .leftJoinAndSelect(UserAccess_1.UserAccess.getSchemaName() + '.user', 'user')
+                .leftJoinAndSelect(UserAccess_1.UserAccess.getSchemaName() + '.access', 'access')
                 .where('user.id = :id', { id: user.id })
                 .getMany();
             let accesses = [];
-            userAccesses.forEach(userAccess => accesses.push(userAccess.access));
+            userAccesses.forEach((userAccess) => accesses.push(userAccess.access));
             user._cachedAccesses = accesses;
             return accesses;
         });
@@ -306,22 +330,25 @@ class UserManager {
         return __awaiter(this, void 0, void 0, function* () {
             let accesses = yield UserManager.loadCachedAccessesForUser(user);
             let accessNames = [];
-            accesses.forEach(access => accessNames.push(access.name));
-            return (accessNames.indexOf(access) !== -1);
+            accesses.forEach((access) => accessNames.push(access.name));
+            return accessNames.indexOf(access) !== -1;
         });
     }
     static _generateSalt() {
         let length = UserManager.SALT_LENGTH;
-        return crypto.randomBytes(Math.ceil(length / 2)).toString("hex").slice(0, length);
+        return crypto
+            .randomBytes(Math.ceil(length / 2))
+            .toString('hex')
+            .slice(0, length);
     }
 }
 exports.UserManager = UserManager;
 UserManager.RENEW_AFTER = 60 * 60 * 24;
 UserManager.REGISTRATION_SEND_EMAIL = true;
 UserManager.SALT_LENGTH = 12;
-UserManager.EXPIRES_IN = "7d";
+UserManager.EXPIRES_IN = '7d';
 UserManager.RENEW_AFTER = 60 * 60 * 24;
-UserManager.PEPPER = "";
+UserManager.PEPPER = '';
 UserManager.LOGIN_NEED_TO_BE_ACTIVATED = true;
 //Registration-Settings
 UserManager.REGISTRATION_SEND_EMAIL = true;
