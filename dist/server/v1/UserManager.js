@@ -308,7 +308,7 @@ class UserManager {
             yield Promise.all([UserAccess_1.UserAccess.saveMany(newUserAccesses), UserAccess_1.UserAccess.deleteMany(deleteUserAccesses)]);
         });
     }
-    static loadCachedAccessesForUser(user, reload) {
+    static loadCachedAccessesForUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             if (user._cachedAccesses) {
                 return user._cachedAccesses;

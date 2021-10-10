@@ -26,7 +26,7 @@ export declare class UserManager {
     static findAccessesForUser(user: any): Promise<any[]>;
     static findAccessesForRole(role: any): Promise<any>;
     static updateCachedAccessesForUser(user: any): Promise<void>;
-    static loadCachedAccessesForUser(user: any, reload?: any): Promise<any>;
+    static loadCachedAccessesForUser(user?: any): Promise<any>;
     static hasAccess(user: any, access: any): Promise<boolean>;
     static _generateSalt(): any;
 }
