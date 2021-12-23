@@ -3,5 +3,5 @@ import { User } from "./User";
 export declare class UserSyncModel extends AccessEasySyncModel {
     static NEED_USER: boolean;
     user: User;
-    static getRelationDefinitions(): {};
+    static getRelationDefinitions(): Record<string, import("cordova-sites-database").BDRelationshipType>;
 }

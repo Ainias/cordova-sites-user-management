@@ -6,12 +6,6 @@ export declare class Role extends EasySyncBaseModel {
     parents: any;
     children: any;
     constructor();
-    static getColumnDefinitions(): {
-        id: {
-            primary: boolean;
-            type: any;
-            generated: boolean;
-        };
-    };
-    static getRelationDefinitions(): {};
+    static getColumnDefinitions(): Record<string, string | import("cordova-sites-database/dist/BDColumnType").BDColumnType>;
+    static getRelationDefinitions(): Record<string, import("cordova-sites-database/dist/BDRelationshipType").BDRelationshipType>;
 }

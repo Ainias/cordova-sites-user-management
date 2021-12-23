@@ -265,7 +265,7 @@ class UserManager {
     static findAccessesForRole(role) {
         return __awaiter(this, void 0, void 0, function* () {
             let accesses = role.accesses;
-            let repo = yield EasySyncServerDb_1.EasySyncServerDb.getInstance()._getRepository(Role_1.Role.getSchemaName());
+            let repo = yield EasySyncServerDb_1.EasySyncServerDb.getInstance().getRepository(Role_1.Role);
             let parents = yield repo
                 .createQueryBuilder(Role_1.Role.getSchemaName())
                 .leftJoinAndSelect(Role_1.Role.getSchemaName() + '.accesses', 'access')
@@ -313,13 +313,13 @@ class UserManager {
             if (user._cachedAccesses) {
                 return user._cachedAccesses;
             }
-            let repo = yield EasySyncServerDb_1.EasySyncServerDb.getInstance()._getRepository(UserAccess_1.UserAccess.getSchemaName());
-            let userAccesses = yield repo
+            let repo = yield EasySyncServerDb_1.EasySyncServerDb.getInstance().getRepository(UserAccess_1.UserAccess);
+            let userAccesses = (yield repo
                 .createQueryBuilder(UserAccess_1.UserAccess.getSchemaName())
                 .leftJoinAndSelect(UserAccess_1.UserAccess.getSchemaName() + '.user', 'user')
                 .leftJoinAndSelect(UserAccess_1.UserAccess.getSchemaName() + '.access', 'access')
                 .where('user.id = :id', { id: user.id })
-                .getMany();
+                .getMany());
             let accesses = [];
             userAccesses.forEach((userAccess) => accesses.push(userAccess.access));
             user._cachedAccesses = accesses;

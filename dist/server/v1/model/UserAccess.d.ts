@@ -3,5 +3,5 @@ export declare class UserAccess extends BaseModel {
     user: any;
     access: any;
     constructor();
-    static getRelationDefinitions(): {};
+    static getRelationDefinitions(): Record<string, import("cordova-sites-database/dist/BDRelationshipType").BDRelationshipType>;
 }

@@ -11,12 +11,12 @@
   },
   "author": "Silas Günther",
   "peerDependencies": {
-    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.7.18",
-    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.5.2",
-    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.7.13",
+    "cordova-sites": "git+https://github.com/Ainias/cordova-sites#0.7.19",
+    "cordova-sites-database": "git+https://github.com/Ainias/cordova-sites-database#0.5.3",
+    "cordova-sites-easy-sync": "git+https://github.com/Ainias/cordova-sites-easy-sync#0.7.14",
     "cs-event-manager": "git+https://github.com/Ainias/event-manager.git#0.2.1",
     "express": "^4.17.1",
-    "js-helper": "git+https://github.com/Ainias/js-helper#0.7.6",
+    "js-helper": "git+https://github.com/Ainias/js-helper#0.7.7",
     "jsonwebtoken": "^8.5.1",
     "nodemailer": "^6.6.1",
     "typeorm": "^0.2.34"

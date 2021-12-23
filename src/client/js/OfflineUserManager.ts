@@ -1,16 +1,14 @@
-import {EasySyncClientDb} from "cordova-sites-easy-sync/dist/client";
-import {NativeStoragePromise} from "cordova-sites/dist/client";
-import {UserManager} from "./UserManager";
-import {Role} from "../../shared/v1/model/Role";
-import {User} from "../../shared/v1/model/User";
-import {Helper} from "js-helper/dist/shared/Helper";
+import { EasySyncClientDb } from 'cordova-sites-easy-sync/dist/client';
+import { NativeStoragePromise } from 'cordova-sites/dist/client';
+import { UserManager } from './UserManager';
+import { Role } from '../../shared/v1/model/Role';
+import { User } from '../../shared/v1/model/User';
+import { Helper } from 'js-helper/dist/shared/Helper';
 
 export class OfflineUserManager extends UserManager {
-
     static LOGGED_OUT_ACCESSES;
     static DEFAULT_ROLES;
     static _lastId: number;
-
 
     constructor() {
         super();
@@ -21,11 +19,11 @@ export class OfflineUserManager extends UserManager {
             username: null,
             email: null,
             accesses: OfflineUserManager.LOGGED_OUT_ACCESSES,
-        }
+        };
     }
 
     async _doGetMe() {
-        let userId = await NativeStoragePromise.getItem("user-manager-user-id");
+        let userId = await NativeStoragePromise.getItem('user-manager-user-id');
         if (Helper.isNotNull(userId)) {
             let user = await User.findById(userId, User.getRelations());
 
@@ -41,17 +39,17 @@ export class OfflineUserManager extends UserManager {
 
         let roles = user.roles;
         let roleIds = [];
-        roles.forEach(role => {
+        roles.forEach((role) => {
             roleIds.push(role.id);
         });
 
-        roles = await Role.findByIds(roleIds, ["accesses"]);
+        roles = await Role.findByIds(roleIds, ['accesses']);
 
-        await Helper.asyncForEach(roles, async role => {
-            accesses.push(...await this._getAccessesFromRole(role))
+        await Helper.asyncForEach(roles, async (role) => {
+            accesses.push(...(await this._getAccessesFromRole(role)));
         });
         let accessNames = [];
-        accesses.forEach(access => {
+        accesses.forEach((access) => {
             accessNames.push(access.name);
         });
 
@@ -66,19 +64,23 @@ export class OfflineUserManager extends UserManager {
     }
 
     async _doLogin(email, password, saveLogin) {
-
-        let user = await User.findOne({
-            "email": email,
-            "password": this._hashPassword(password),
-            "activated": true,
-            "blocked": false,
-        }, undefined, undefined, User.getRelations());
+        let user = await User.findOne(
+            {
+                email: email,
+                password: this._hashPassword(password),
+                activated: true,
+                blocked: false,
+            },
+            undefined,
+            undefined,
+            User.getRelations()
+        );
 
         if (user) {
             await this._handleLoginFromUser(user);
 
-            if (saveLogin){
-                await NativeStoragePromise.setItem("user-manager-user-id", user.id);
+            if (saveLogin) {
+                await NativeStoragePromise.setItem('user-manager-user-id', user.id);
             }
 
             return true;
@@ -96,21 +98,22 @@ export class OfflineUserManager extends UserManager {
             accesses: OfflineUserManager.LOGGED_OUT_ACCESSES,
         };
 
-        await NativeStoragePromise.remove("user-manager-user-id");
+        await NativeStoragePromise.remove('user-manager-user-id');
         return false;
     }
 
     async _getAccessesFromRole(role) {
         let accesses = role.accesses;
 
-        let repo = await EasySyncClientDb.getInstance()._getRepository(Role.getSchemaName());
-        let parents = await repo.createQueryBuilder(Role.getSchemaName())
-            .leftJoinAndSelect(Role.getSchemaName() + '.accesses', "access")
-            .leftJoinAndSelect(Role.getSchemaName() + '.children', "child")
-            .where('child.id = :id', {id: role.id})
+        let repo = await EasySyncClientDb.getInstance().getRepository(Role);
+        let parents = await repo
+            .createQueryBuilder(Role.getSchemaName())
+            .leftJoinAndSelect(Role.getSchemaName() + '.accesses', 'access')
+            .leftJoinAndSelect(Role.getSchemaName() + '.children', 'child')
+            .where('child.id = :id', { id: role.id })
             .getMany();
 
-        await Helper.asyncForEach(parents, async role => {
+        await Helper.asyncForEach(parents, async (role) => {
             let otherAccesses = await this._getAccessesFromRole(role);
             accesses.push(...otherAccesses);
         });
@@ -119,18 +122,15 @@ export class OfflineUserManager extends UserManager {
 
     async _doRegister(email, username, password) {
         let errors = {};
-        let users = await Promise.all([
-            User.findOne({"email": email}),
-            User.findOne({"username": username}),
-        ]);
-        if (Helper.isNotNull(users[0])){
-            errors["email"] = "email is already in use."
+        let users = await Promise.all([User.findOne({ email: email }), User.findOne({ username: username })]);
+        if (Helper.isNotNull(users[0])) {
+            errors['email'] = 'email is already in use.';
         }
-        if (Helper.isNotNull(users[1])){
-            errors["username"] = "username is already in use."
+        if (Helper.isNotNull(users[1])) {
+            errors['username'] = 'username is already in use.';
         }
 
-        if (Object.keys(errors).length > 0){
+        if (Object.keys(errors).length > 0) {
             return errors;
         }
 
@@ -149,9 +149,9 @@ export class OfflineUserManager extends UserManager {
         return user;
     }
 
-    static async _getNewId(){
-        if (Helper.isNull(OfflineUserManager._lastId)){
-            let user = await User.findOne(undefined, {"id":  "DESC"});
+    static async _getNewId() {
+        if (Helper.isNull(OfflineUserManager._lastId)) {
+            let user = await User.findOne(undefined, { id: 'DESC' });
             OfflineUserManager._lastId = user.id;
         }
         OfflineUserManager._lastId++;

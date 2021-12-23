@@ -3,11 +3,5 @@ export declare class Access extends EasySyncBaseModel {
     name: string;
     description: string;
     constructor();
-    static getColumnDefinitions(): {
-        id: {
-            primary: boolean;
-            type: any;
-            generated: boolean;
-        };
-    };
+    static getColumnDefinitions(): Record<string, string | import("cordova-sites-database/dist/BDColumnType").BDColumnType>;
 }

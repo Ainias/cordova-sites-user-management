@@ -278,7 +278,7 @@ export class UserManager {
     static async findAccessesForRole(role) {
         let accesses = role.accesses;
 
-        let repo = await EasySyncServerDb.getInstance()._getRepository(Role.getSchemaName());
+        let repo = await EasySyncServerDb.getInstance().getRepository(Role);
         let parents = await repo
             .createQueryBuilder(Role.getSchemaName())
             .leftJoinAndSelect(Role.getSchemaName() + '.accesses', 'access')
@@ -333,15 +333,15 @@ export class UserManager {
             return user._cachedAccesses;
         }
 
-        let repo = await EasySyncServerDb.getInstance()._getRepository(UserAccess.getSchemaName());
-        let userAccesses = await repo
+        let repo = await EasySyncServerDb.getInstance().getRepository(UserAccess);
+        let userAccesses = (await repo
             .createQueryBuilder(UserAccess.getSchemaName())
             .leftJoinAndSelect(UserAccess.getSchemaName() + '.user', 'user')
             .leftJoinAndSelect(UserAccess.getSchemaName() + '.access', 'access')
             .where('user.id = :id', { id: user.id })
-            .getMany();
+            .getMany()) as UserAccess[];
 
-        let accesses = [];
+        let accesses: string[] = [];
         userAccesses.forEach((userAccess) => accesses.push(userAccess.access));
         user._cachedAccesses = accesses;
 

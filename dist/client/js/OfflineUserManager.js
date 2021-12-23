@@ -30,7 +30,7 @@ class OfflineUserManager extends UserManager_1.UserManager {
     }
     _doGetMe() {
         return __awaiter(this, void 0, void 0, function* () {
-            let userId = yield client_2.NativeStoragePromise.getItem("user-manager-user-id");
+            let userId = yield client_2.NativeStoragePromise.getItem('user-manager-user-id');
             if (Helper_1.Helper.isNotNull(userId)) {
                 let user = yield User_1.User.findById(userId, User_1.User.getRelations());
                 if (Helper_1.Helper.isNotNull(user) && user.activated && !user.blocked) {
@@ -45,15 +45,15 @@ class OfflineUserManager extends UserManager_1.UserManager {
             let accesses = [];
             let roles = user.roles;
             let roleIds = [];
-            roles.forEach(role => {
+            roles.forEach((role) => {
                 roleIds.push(role.id);
             });
-            roles = yield Role_1.Role.findByIds(roleIds, ["accesses"]);
+            roles = yield Role_1.Role.findByIds(roleIds, ['accesses']);
             yield Helper_1.Helper.asyncForEach(roles, (role) => __awaiter(this, void 0, void 0, function* () {
-                accesses.push(...yield this._getAccessesFromRole(role));
+                accesses.push(...(yield this._getAccessesFromRole(role)));
             }));
             let accessNames = [];
-            accesses.forEach(access => {
+            accesses.forEach((access) => {
                 accessNames.push(access.name);
             });
             this._userData = {
@@ -69,15 +69,15 @@ class OfflineUserManager extends UserManager_1.UserManager {
     _doLogin(email, password, saveLogin) {
         return __awaiter(this, void 0, void 0, function* () {
             let user = yield User_1.User.findOne({
-                "email": email,
-                "password": this._hashPassword(password),
-                "activated": true,
-                "blocked": false,
+                email: email,
+                password: this._hashPassword(password),
+                activated: true,
+                blocked: false,
             }, undefined, undefined, User_1.User.getRelations());
             if (user) {
                 yield this._handleLoginFromUser(user);
                 if (saveLogin) {
-                    yield client_2.NativeStoragePromise.setItem("user-manager-user-id", user.id);
+                    yield client_2.NativeStoragePromise.setItem('user-manager-user-id', user.id);
                 }
                 return true;
             }
@@ -94,17 +94,18 @@ class OfflineUserManager extends UserManager_1.UserManager {
                 email: null,
                 accesses: OfflineUserManager.LOGGED_OUT_ACCESSES,
             };
-            yield client_2.NativeStoragePromise.remove("user-manager-user-id");
+            yield client_2.NativeStoragePromise.remove('user-manager-user-id');
             return false;
         });
     }
     _getAccessesFromRole(role) {
         return __awaiter(this, void 0, void 0, function* () {
             let accesses = role.accesses;
-            let repo = yield client_1.EasySyncClientDb.getInstance()._getRepository(Role_1.Role.getSchemaName());
-            let parents = yield repo.createQueryBuilder(Role_1.Role.getSchemaName())
-                .leftJoinAndSelect(Role_1.Role.getSchemaName() + '.accesses', "access")
-                .leftJoinAndSelect(Role_1.Role.getSchemaName() + '.children', "child")
+            let repo = yield client_1.EasySyncClientDb.getInstance().getRepository(Role_1.Role);
+            let parents = yield repo
+                .createQueryBuilder(Role_1.Role.getSchemaName())
+                .leftJoinAndSelect(Role_1.Role.getSchemaName() + '.accesses', 'access')
+                .leftJoinAndSelect(Role_1.Role.getSchemaName() + '.children', 'child')
                 .where('child.id = :id', { id: role.id })
                 .getMany();
             yield Helper_1.Helper.asyncForEach(parents, (role) => __awaiter(this, void 0, void 0, function* () {
@@ -117,15 +118,12 @@ class OfflineUserManager extends UserManager_1.UserManager {
     _doRegister(email, username, password) {
         return __awaiter(this, void 0, void 0, function* () {
             let errors = {};
-            let users = yield Promise.all([
-                User_1.User.findOne({ "email": email }),
-                User_1.User.findOne({ "username": username }),
-            ]);
+            let users = yield Promise.all([User_1.User.findOne({ email: email }), User_1.User.findOne({ username: username })]);
             if (Helper_1.Helper.isNotNull(users[0])) {
-                errors["email"] = "email is already in use.";
+                errors['email'] = 'email is already in use.';
             }
             if (Helper_1.Helper.isNotNull(users[1])) {
-                errors["username"] = "username is already in use.";
+                errors['username'] = 'username is already in use.';
             }
             if (Object.keys(errors).length > 0) {
                 return errors;
@@ -146,7 +144,7 @@ class OfflineUserManager extends UserManager_1.UserManager {
     static _getNewId() {
         return __awaiter(this, void 0, void 0, function* () {
             if (Helper_1.Helper.isNull(OfflineUserManager._lastId)) {
-                let user = yield User_1.User.findOne(undefined, { "id": "DESC" });
+                let user = yield User_1.User.findOne(undefined, { id: 'DESC' });
                 OfflineUserManager._lastId = user.id;
             }
             OfflineUserManager._lastId++;

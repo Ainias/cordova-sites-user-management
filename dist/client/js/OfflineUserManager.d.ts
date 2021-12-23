@@ -1,4 +1,4 @@
-import { UserManager } from "./UserManager";
+import { UserManager } from './UserManager';
 export declare class OfflineUserManager extends UserManager {
     static LOGGED_OUT_ACCESSES: any;
     static DEFAULT_ROLES: any;
